@@ -1,0 +1,73 @@
+﻿@inject NavigationManager NavManager
+
+@* <h1>Nav Menu</h1> *@
+﻿
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <h1><b><a class="navbar-brand" href="">OutZen </a></b></h1>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+<!-- Bouton Hamburger -->
+@* <input type="checkbox" id="menu-toggle" class="menu-toggle" @bind="IsMenuOpen" />
+<label for="menu-toggle" class="hamburger">
+    <span></span>
+    <span></span>
+    <span></span>
+</label>
+ *@
+<!-- Navigation Menu -->
+<nav class="sidebar">
+    <ul>
+        @if (IsHomePage)
+        {
+            <li><NavLink href="/" @onclick="CloseMenu" class="nav-link" activeClass="active">🏠 Accueil</NavLink></li>
+
+            <li><NavLink href="/presentation" class="nav-link" activeClass="active">🛡 Présentation</NavLink></li>
+            <li><NavLink href="/crowdinfo">✨ Crowdinfos</NavLink></li>
+            <li><NavLink href="/event">✨ Events</NavLink></li>
+            <li><NavLink href="/gptinteraction">🎓 Gptinteractions</NavLink></li>
+            <li><NavLink href="/place">✨ Places</NavLink></li>
+            <li><NavLink href="/suggestion">🎓 Suggestions</NavLink></li>
+            <li><NavLink href="/trafficcondition">✨ TrafficConditions</NavLink></li>
+            <li><NavLink href="/user">✨ Users</NavLink></li>
+            <li><NavLink href="/weatherforecast">✨ WeatherForecasts</NavLink></li>
+
+
+            <li><NavLink href="/privacy">🛡 Privacy</NavLink></li>
+        }
+        else
+        {
+            <li><NavLink href="/" @onclick="CloseMenu" class="nav-link" activeClass="active">⬅️ Back Home</NavLink></li>
+
+        }
+    </ul>
+</nav>
+
+
+
+@code {
+
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu() => collapseNavMenu = !collapseNavMenu;
+
+    private record MenuItem(string Text, string Href, string Icon, NavLinkMatch Match);
+
+    private bool IsMenuOpen;
+    private bool IsHomePage => NavManager.Uri.EndsWith("/");
+
+    protected override void OnInitialized()
+    {
+        NavManager.LocationChanged += (_, _) => StateHasChanged();
+    }
+
+    private void CloseMenu()
+    {
+        IsMenuOpen = false;
+    }
+}

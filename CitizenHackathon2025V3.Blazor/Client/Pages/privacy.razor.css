@@ -1,0 +1,32 @@
+﻿/* privacy.razor.css */
+
+.privacy-container {
+    padding: 4rem 2rem;
+    color: var(--text-color);
+    max-width: 800px;
+    margin: auto;
+    background-color: #1a1a1a;
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(0,255,247,0.05);
+}
+
+.privacy-title {
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: var(--accent-color);
+}
+
+.privacy-content {
+    line-height: 1.8;
+    color: #ccc;
+}
+
+.privacy-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border-left: 4px solid var(--accent-color);
+    background-color: #111;
+    border-radius: 12px;
+}
