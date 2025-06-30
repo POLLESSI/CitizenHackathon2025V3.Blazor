@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Json;
 using CitizenHackathon2025V3.Blazor.Client.Models;
 
-namespace CitizenHackathon2025V2.Blazor.Services
+namespace CitizenHackathon2025V3.Blazor.Client.Services
 {
     public class TrafficConditionService
     {
@@ -14,7 +14,7 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
         public async Task<IEnumerable<TrafficConditionModel?>> GetLatestTrafficConditionAsync()
         {
-            var response = await _httpClient.GetAsync("api/trafficconditions/latest");
+            var response = await _httpClient.GetAsync("api/trafficcondition/latest");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<IEnumerable<TrafficConditionModel?>>();
@@ -23,7 +23,7 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
         public async Task<TrafficConditionModel> SaveTrafficConditionAsync(TrafficConditionModel @trafficCondition)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/trafficconditions", @trafficCondition);
+            var response = await _httpClient.PostAsJsonAsync("api/trafficcondition", @trafficCondition);
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<TrafficConditionModel>();
@@ -38,3 +38,71 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Copyrigtht (c) 2025 Citizen Hackathon https://github.com/POLLESSI/Citizenhackathon2025V3.Blazor.Client. All rights reserved.

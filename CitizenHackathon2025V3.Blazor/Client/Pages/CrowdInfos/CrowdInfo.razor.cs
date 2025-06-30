@@ -1,4 +1,4 @@
-﻿using CitizenHackathon2025V2.Blazor.Services;
+﻿using CitizenHackathon2025V3.Blazor.Client.Services;
 using CitizenHackathon2025V3.Blazor.Client.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -8,7 +8,7 @@ namespace CitizenHackathon2025V3.Blazor.Client.Pages.CrowdInfos
 {
     public partial class CrowdInfo
     {
-#nullable disable
+    #nullable disable
         public HttpClient Client { get; set; }  // Injection HttpClient
         [Inject] public CrowdInfoService CrowdInfoService { get; set; }
         [Inject] public NavigationManager Navigation { get; set; }
@@ -21,7 +21,7 @@ namespace CitizenHackathon2025V3.Blazor.Client.Pages.CrowdInfos
         {
             CrowdInfos = (await CrowdInfoService.GetAllCrowdInfoAsync()).ToList();
             hubConnection = new HubConnectionBuilder()
-                .WithUrl(Navigation.ToAbsoluteUri("/crowdinfohub"))
+                .WithUrl(new Uri("https://localhost:7254/hubs/crowdHub"))
                 .Build();
 
             hubConnection.On("notifynewcrowdinfo", async () =>
@@ -36,3 +36,75 @@ namespace CitizenHackathon2025V3.Blazor.Client.Pages.CrowdInfos
 
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Copyrigtht (c) 2025 Citizen Hackathon https://github.com/POLLESSI/Citizenhackathon2025V3.Blazor.Client. All rights reserved.

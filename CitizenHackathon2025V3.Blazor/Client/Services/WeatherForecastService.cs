@@ -1,14 +1,14 @@
 ﻿using System.Net.Http.Json;
 using CitizenHackathon2025V3.Blazor.Client.Models;
 
-namespace CitizenHackathon2025V2.Blazor.Services
+namespace CitizenHackathon2025V3.Blazor.Client.Services
 {
-    public class WeatherForcastService
+    public class WeatherForecastService
     {
-#nullable disable
+    #nullable disable
         private readonly HttpClient _httpClient;
 
-        public WeatherForcastService(HttpClient httpClient)
+        public WeatherForecastService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
@@ -22,7 +22,7 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
         public async Task<IEnumerable<WeatherForecastModel?>> GetLatestWeatherForecastAsync()
         {
-            var response = await _httpClient.GetAsync("api/weatherforecast/latest");
+            var response = await _httpClient.GetAsync("api/weatherforecast/current");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<IEnumerable<WeatherForecastModel?>>();
@@ -75,3 +75,83 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Copyrigtht (c) 2025 Citizen Hackathon https://github.com/POLLESSI/Citizenhackathon2025V3.Blazor.Client. All rights reserved.

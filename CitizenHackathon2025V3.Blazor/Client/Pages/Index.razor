@@ -1,13 +1,53 @@
 ﻿@page "/"
 @using CitizenHackathon2025V3.Blazor.Client
-
-<PageTitle>Index</PageTitle>
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager Navigation
+<PageTitle>OutZen - Home</PageTitle>
 
 <h2>Welcome to the</h2>
 
-<h1><strong><strong>OutZen</strong>'s site</strong></h1>
+<PageTitle>OutZen - Home</PageTitle>
 
 <img src="" alt="" />
+<div class="scroll-container">
+    <!-- Intro -->
+    <section class="intro-section">
+        <h1>Bienvenue sur <span class="highlight">OutZen</span></h1>
+        <p>Suivez en temps réel l'affluence, le trafic et la météo, et recevez des suggestions intelligentes.</p>
+    </section>
+
+    <!-- Carte -->
+    <section class="leaflet-section">
+        <h2>Carte interactive</h2>
+        <div id="map" class="map-container"></div>
+    </section>
+
+    <!-- Simulateur + Graph -->
+    <section class="simulator-section">
+        <h2>Affluence en temps réel</h2>
+        <canvas id="crowdChart"></canvas>
+        <button class="cta-button" @onclick="SimulateCrowdChange">Simuler affluence</button>
+    </section>
+
+    <!-- Météo & Trafic & Suggestions -->
+    <section class="info-section">
+        <h2>Infos temps réel & suggestions</h2>
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>Météo</h3>
+                <pre>@WeatherInfo</pre>
+            </div>
+            <div class="info-box">
+                <h3>Trafic</h3>
+                <pre>@TrafficInfo</pre>
+            </div>
+            <div class="info-box">
+                <h3>Suggestion</h3>
+                <p><strong>@SuggestionMessage</strong></p>
+            </div>
+        </div>
+    </section>
+</div>
 
 <div class="svg-background">
     <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
@@ -67,14 +107,147 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-#nullable disable
         if (firstRender)
         {
-            await JS.InvokeVoidAsync("initAnimatedBackground");
+            await JS.InvokeVoidAsync("initializeLeafletMap");
+            await JS.InvokeVoidAsync("initCrowdChart");
+
+            // Chargement initial météo/traffic
+            WeatherInfo = await JS.InvokeAsync<string>("getOpenWeatherInfo");
+            TrafficInfo = await JS.InvokeAsync<string>("getWazeTrafficInfo");
+            ComputeSuggestion();
+
+            // SignalR
+            hubConnection = new HubConnectionBuilder()
+                .WithUrl(Navigation.ToAbsoluteUri("/hubs/eventHub"))
+                .WithAutomaticReconnect()
+                .Build();
+
+            hubConnection.On<string>("UpdateCrowdLevel", HandleCrowdUpdate);
+            await hubConnection.StartAsync();
         }
     }
 
+    private async Task HandleCrowdUpdate(string levelStr)
+    {
+        // ajoute point au graphe
+        await JS.InvokeVoidAsync("updateCrowdChart", levelStr);
+        crowdData.Add(int.Parse(levelStr));
+        timeLabels.Add(DateTime.Now.ToString("HH:mm:ss"));
+
+        // rafraîchit météo/traffic
+        WeatherInfo = await JS.InvokeAsync<string>("getOpenWeatherInfo");
+        TrafficInfo = await JS.InvokeAsync<string>("getWazeTrafficInfo");
+        ComputeSuggestion();
+
+        StateHasChanged();
+    }
+
+    // private Task SimulateCrowdChange()
+    // {
+    //     var rnd = new Random();
+    //     var val = rnd.Next(0, 100);
+    //     return hubConnection.SendAsync("BroadcastCrowdLevel", val.ToString());
+    // }
+
+    private void ComputeSuggestion()
+    {
+        var crowd = crowdData.LastOrDefault();
+        if (crowd < 30 && WeatherInfo.Contains("Sunny") && TrafficInfo.Contains("Fluid"))
+            SuggestionMessage = "Perfect for a quiet stroll!";
+        else if (crowd < 60)
+            SuggestionMessage = "Bonne sortie, mais soyez pragmatique pour le trafic.";
+        else
+            SuggestionMessage = "Have a good outing, but be pragmatic about traffic.";
+    }
+
+
+    private async Task InitializeMap()
+    {
+        await JS.InvokeVoidAsync("initializeLeafletMap");
+    }
+
+    private async Task SimulateCrowdChange()
+    {
+        var newLevel = new[] { "Weak", "Moderate", "High", "Critical" }[new Random().Next(0, 4)];
+        await hubConnection.SendAsync("BroadcastCrowdLevel", newLevel);
+    }
+
     [Inject]
+    #nullable disable
     private IJSRuntime JS { get; set; }
+    private HubConnection hubConnection;
+    private string crowdLevel = "Moderate";
+    private readonly List<int> crowdData = new();
+    private readonly List<string> timeLabels = new();
+    private string WeatherInfo = "Loading...";
+    private string TrafficInfo = "Loading...";
+    private string SuggestionMessage = "Waiting for data...";
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @* // Copyrigtht (c) 2025 Citizen Hackathon https://github.com/POLLESSI/Citizenhackathon2025V3.Blazor.Client. All rights reserved. *@

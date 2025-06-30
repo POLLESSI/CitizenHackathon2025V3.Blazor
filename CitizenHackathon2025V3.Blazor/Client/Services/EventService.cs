@@ -1,7 +1,7 @@
 ﻿using CitizenHackathon2025V3.Blazor.Client.Models;
 using System.Net.Http.Json;
 
-namespace CitizenHackathon2025V2.Blazor.Services
+namespace CitizenHackathon2025V3.Blazor.Client.Services
 {
     public class EventService
     {
@@ -14,7 +14,7 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
         public async Task<IEnumerable<EventModel?>> GetLatestEventAsync()
         {
-            var response = await _httpClient.GetAsync("api/events/latest");
+            var response = await _httpClient.GetAsync("api/event/latest");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<IEnumerable<EventModel?>>();
@@ -23,7 +23,7 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
         public async Task<EventModel> SaveEventAsync(EventModel @event)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/events", @event);
+            var response = await _httpClient.PostAsJsonAsync("api/event/save", @event);
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<EventModel>();
@@ -32,7 +32,7 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
         public async Task<IEnumerable<EventModel>> GetUpcomingOutdoorEventsAsync()
         {
-            var response = await _httpClient.GetAsync("api/events/upcoming/outdoor");
+            var response = await _httpClient.GetAsync("api/event/upcoming-outdoor");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<IEnumerable<EventModel>>();
@@ -41,7 +41,7 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
         public async Task<EventModel> CreateEventAsync(EventModel newEvent)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/events", newEvent);
+            var response = await _httpClient.PostAsJsonAsync("api/event", newEvent);
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<EventModel>();
@@ -50,7 +50,7 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
         public async Task<EventModel?> GetByIdAsync(int id)
         {
-            var response = await _httpClient.GetAsync($"api/events/{id}");
+            var response = await _httpClient.GetAsync($"api/event/{id}");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<EventModel>();
@@ -59,7 +59,7 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
         public async Task<int> ArchivePastEventsAsync()
         {
-            var response = await _httpClient.PostAsync("api/events/deleted", null);
+            var response = await _httpClient.PostAsync("api/event/archive-expired", null);
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<int>();

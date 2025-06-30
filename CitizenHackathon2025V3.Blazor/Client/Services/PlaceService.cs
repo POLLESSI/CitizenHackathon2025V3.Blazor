@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Json;
 using CitizenHackathon2025V3.Blazor.Client.Models;
 
-namespace CitizenHackathon2025V2.Blazor.Services
+namespace CitizenHackathon2025V3.Blazor.Client.Services
 {
     public class PlaceService
     {
@@ -14,7 +14,7 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
         public async Task<IEnumerable<PlaceModel?>> GetLatestPlaceAsync()
         {
-            var response = await _httpClient.GetAsync("api/places/latest");
+            var response = await _httpClient.GetAsync("api/place/latest");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<IEnumerable<PlaceModel?>>();
@@ -23,7 +23,7 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
         public async Task<PlaceModel> SavePlaceAsync(PlaceModel @place)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/places", @place);
+            var response = await _httpClient.PostAsJsonAsync("api/place", @place);
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<PlaceModel>();
@@ -38,3 +38,77 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Copyrigtht (c) 2025 Citizen Hackathon https://github.com/POLLESSI/Citizenhackathon2025V3.Blazor.Client. All rights reserved.

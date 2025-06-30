@@ -11,6 +11,6 @@
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public string Capacity { get; set; }
-        public string tag { get; set; }
+        public string Tag { get; set; }
     }
 }

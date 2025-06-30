@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Json;
 using CitizenHackathon2025V3.Blazor.Client.Models;
 
-namespace CitizenHackathon2025V2.Blazor.Services
+namespace CitizenHackathon2025V3.Blazor.Client.Services
 {
     public class CrowdInfoService
     {
@@ -23,7 +23,7 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
         public async Task<IEnumerable<CrowdInfoModel>> GetAllCrowdInfoAsync()
         {
-                        var response = await _httpClient.GetAsync("api/crowdinfo");
+                        var response = await _httpClient.GetAsync("api/crowdinfo/all");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<IEnumerable<CrowdInfoModel>>();
@@ -41,7 +41,7 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
         public async Task<bool> DeleteCrowdInfoAsync(int id)
         {
-            var response = await _httpClient.DeleteAsync($"api/crowdinfo/{id}");
+            var response = await _httpClient.DeleteAsync($"api/crowdinfo/archive/{id}");
             return response.IsSuccessStatusCode;
         }
         public CrowdInfoModel UpdateCrowdInfo(CrowdInfoModel crowdInfo)
@@ -52,3 +52,79 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Copyrigtht (c) 2025 Citizen Hackathon https://github.com/POLLESSI/Citizenhackathon2025V3.Blazor.Client. All rights reserved.

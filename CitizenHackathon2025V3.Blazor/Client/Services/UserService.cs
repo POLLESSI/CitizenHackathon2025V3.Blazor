@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Json;
 using CitizenHackathon2025V3.Blazor.Client.Models;
 
-namespace CitizenHackathon2025V2.Blazor.Services
+namespace CitizenHackathon2025V3.Blazor.Client.Services
 {
     public class UserService
     {
@@ -14,7 +14,7 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
         public async Task<UserModel> GetUserByEmailAsync(string email)
         {
-            var response = await _httpClient.GetAsync($"api/users/email/{email}");
+            var response = await _httpClient.GetAsync($"api/user/getbyemail/{email}");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<UserModel>();
@@ -23,7 +23,7 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
         public async Task<UserModel> GetUserByIdAsync(int id)
         {
-            var response = await _httpClient.GetAsync($"api/users/{id}");
+            var response = await _httpClient.GetAsync($"api/user/{id}");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<UserModel>();
@@ -32,7 +32,7 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
         public async Task<IEnumerable<UserModel>> GetAllActiveUsersAsync()
         {
-            var response = await _httpClient.GetAsync("api/users/active");
+            var response = await _httpClient.GetAsync("api/user/active");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<IEnumerable<UserModel>>();
@@ -48,7 +48,7 @@ namespace CitizenHackathon2025V2.Blazor.Services
                 Role = role.Role,
                 Status = 1 // Assuming 1 means active
             };
-            var response = await _httpClient.PostAsJsonAsync("api/users/register", user);
+            var response = await _httpClient.PostAsJsonAsync("api/user/register", user);
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<UserModel>();
@@ -62,12 +62,12 @@ namespace CitizenHackathon2025V2.Blazor.Services
                 Email = email,
                 PasswordHash = password // In a real application, hash the password
             };
-            var response = await _httpClient.PostAsJsonAsync("api/users/login", user);
+            var response = await _httpClient.PostAsJsonAsync("api/user/login", user);
             return response.IsSuccessStatusCode;
         }
         public async Task DeactivateUserAsync(int id)
         {
-            var response = await _httpClient.DeleteAsync($"api/users/deleted/{id}");
+            var response = await _httpClient.DeleteAsync($"api/user/{id}");
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception("Failed to deactivate user");
@@ -86,3 +86,80 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Copyrigtht (c) 2025 Citizen Hackathon https://github.com/POLLESSI/Citizenhackathon2025V3.Blazor.Client. All rights reserved.

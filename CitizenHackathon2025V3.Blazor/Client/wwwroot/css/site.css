@@ -1,0 +1,107 @@
+﻿.traffic-icon .pulse-green {
+    background: rgba(0, 255, 0, 0.6);
+}
+
+.traffic-icon .pulse-orange {
+    background: rgba(255, 165, 0, 0.6);
+}
+
+.traffic-icon .pulse-red {
+    background: rgba(255, 0, 0, 0.6);
+}
+
+.traffic-icon div {
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.9);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0.9);
+        opacity: 0.7;
+    }
+}
+
+.new-event {
+    animation: flash 0.4s alternate 4;
+}
+
+@keyframes flash {
+    from {
+        filter: brightness(3);
+    }
+
+    to {
+        filter: brightness(1);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*// Copyrigtht (c) 2025 Citizen Hackathon https://github.com/POLLESSI/Citizenhackathon2025V3.Blazor.Client. All rights reserved.*/

@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Json;
 using CitizenHackathon2025V3.Blazor.Client.Models;
 
-namespace CitizenHackathon2025V2.Blazor.Services
+namespace CitizenHackathon2025V3.Blazor.Client.Services
 {
     public class SuggestionService
     {
@@ -14,7 +14,7 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
         public async Task<IEnumerable<SuggestionModel>> GetSuggestionsByUserAsync(int userId)
         {
-            var response = await _httpClient.GetAsync($"api/suggestions/user/{userId}");
+            var response = await _httpClient.GetAsync($"api/suggestion/user/{userId}");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<IEnumerable<SuggestionModel>>();
@@ -23,12 +23,12 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
         public async Task<bool> SoftDeleteSuggestionAsync(int id)
         {
-            var response = await _httpClient.DeleteAsync($"api/suggestions/{id}");
+            var response = await _httpClient.DeleteAsync($"api/suggestion/{id}");
             return response.IsSuccessStatusCode;
         }
         public async Task<IEnumerable<SuggestionModel?>> GetLatestSuggestionAsync()
         {
-            var response = await _httpClient.GetAsync("api/suggestions/latest");
+            var response = await _httpClient.GetAsync("api/suggestion/latest");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<IEnumerable<SuggestionModel?>>();
@@ -37,7 +37,7 @@ namespace CitizenHackathon2025V2.Blazor.Services
         }
         public async Task<SuggestionModel> SaveSuggestionAsync(SuggestionModel @suggestion)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/suggestions", @suggestion);
+            var response = await _httpClient.PostAsJsonAsync("api/suggestion", @suggestion);
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<SuggestionModel>();
@@ -56,3 +56,86 @@ namespace CitizenHackathon2025V2.Blazor.Services
         //}
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Copyrigtht (c) 2025 Citizen Hackathon https://github.com/POLLESSI/Citizenhackathon2025V3.Blazor.Client. All rights reserved.

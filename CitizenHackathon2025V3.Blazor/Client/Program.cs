@@ -1,5 +1,6 @@
-using CitizenHackathon2025V2.Blazor.Services;
+using Blazored.Toast;
 using CitizenHackathon2025V3.Blazor.Client;
+using CitizenHackathon2025V3.Blazor.Client.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -19,8 +20,96 @@ builder.Services.AddScoped<GptInteractionService>();
 builder.Services.AddScoped<PlaceService>();
 builder.Services.AddScoped<SuggestionService>();
 builder.Services.AddScoped<TrafficConditionService>();
+builder.Services.AddSingleton<TrafficServiceBlazor>();
 builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<WeatherForcastService>();
+builder.Services.AddScoped<WeatherForecastService>();
+builder.Services.AddBlazoredToast();
+
 
 
 await builder.Build().RunAsync();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Copyrigtht (c) 2025 Citizen Hackathon https://github.com/POLLESSI/Citizenhackathon2025V3.Blazor.Client. All rights reserved.
