@@ -1,28 +1,26 @@
 ﻿// Leaflet
-window.initializeLeafletMap = () => {
-    const map = L.map('leafletMap').setView([48.8584, 2.2945], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+window.outzen = {
+    initializeLeafletMap: () => {
+        const map = L.map('leafletMap').setView([48.8584, 2.2945], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
 
-    L.marker([48.8584, 2.2945]).addTo(map)
-        .bindPopup('Tourist activity : Eiffel Tower')
-        .openPopup();
-};
-// Scroll Animations
-window.initScrollAnimations = () => {
-    const revealElements = document.querySelectorAll('.scroll-reveal');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
-    }, {
-        threshold: 0.1
-    });
+        L.marker([48.8584, 2.2945]).addTo(map)
+            .bindPopup('Tourist activity : Eiffel Tower')
+            .openPopup();
+    },
+    // Scroll Animations
+    initScrollAnimations: () => {
+        const revealElements = document.querySelectorAll('.scroll-reveal');
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) e.target.classList.add('visible');
+            });
+        }, { threshold: 0.1 });
 
-    revealElements.forEach(el => observer.observe(el));
+        revealElements.forEach(el => observer.observe(el));
+    }
 };
 // Chart.js
 window.initCrowdChart = () => {
@@ -52,26 +50,29 @@ window.getOpenWeatherInfo = async () => {
     try {
         /*const res = await fetch('https://api.openweathermap.org/data/2.5/weather?q=Waterloo&units=metric&appid=YOUR_APPID');*/
         const json = await res.json();
-        if (!res.ok) trow new Error(`HTTP ${res.status}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return `🌡️ ${json.main.temp}°C, ${json.weather[0].description}`;
     } catch (ex) {
         console.error("Error fetching OpenWeather data:", ex);
         return { error: ex.message || "Network error" };
-   
+    }
 };
 
 // Waze Traffic (simulation)
-    window.getWazeTrafficInfo = async () => {
-        try {
-            const res = await fetch("https://localhost:7254/traffic/latest"); // use the full URL of API
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            return await res.json();
-        } catch (e) {
-            console.error("Waze Traffic Error:", e);
-            return { error: e.message || "Network error" };
-        }
-    };
+window.getWazeTrafficInfo = async () => {
+    try {
+        const res = await fetch("https://localhost:7254/traffic/latest"); // use the full URL of API
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return await res.json();
+    } catch (e) {
+        console.error("Waze Traffic Error:", e);
+        return { error: e.message || "Network error" };
+    }
+};
 
+    window.toggleDarkMode = () => {
+        document.body.classList.toggle("dark-mode");
+    };
 
 
 

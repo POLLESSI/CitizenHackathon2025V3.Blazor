@@ -1,15 +1,58 @@
-﻿.traffic-icon .pulse-green {
-    background: rgba(0, 255, 0, 0.6);
+﻿@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #0f0f0f;
+    color: #f5f5f5;
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease;
 }
 
-.traffic-icon .pulse-orange {
-    background: rgba(255, 165, 0, 0.6);
+a {
+    color: #00fff7;
+    text-decoration: none;
 }
 
-.traffic-icon .pulse-red {
-    background: rgba(255, 0, 0, 0.6);
+    a:hover {
+        color: #ff00ff;
+        text-shadow: 0 0 4px #ff00ff;
+    }
+
+h1, h2, h3, h4 {
+    font-weight: 600;
+    color: #ffffff;
 }
 
+.section {
+    padding: 2rem;
+    margin: 2rem auto;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 8px #00fff733, 0 0 12px #ff00ff33;
+    transition: all 0.4s ease;
+}
+
+.button-primary {
+    background: linear-gradient(135deg, #00fff7, #ff00ff);
+    color: #0f0f0f;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+    .button-primary:hover {
+        filter: brightness(1.2);
+        box-shadow: 0 0 12px #00fff766, 0 0 24px #ff00ff66;
+    }
+
+/* Pulse for traffic */
 .traffic-icon div {
     border-radius: 50%;
     width: 20px;
@@ -17,20 +60,81 @@
     animation: pulse 1.5s infinite ease-in-out;
 }
 
+.traffic-icon .pulse-green {
+    background: rgba(0, 255, 0, 0.4);
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    animation: pulse 1.5s infinite;
+}
+
+.traffic-icon .pulse-orange {
+    background: rgba(255, 165, 0, 0.5);
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    animation: pulse 1.5s infinite;
+}
+
+.traffic-icon .pulse-red {
+    background: rgba(255, 0, 0, 0.5);
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    animation: pulse 1.5s infinite;
+}
+
 @keyframes pulse {
     0% {
-        transform: scale(0.9);
-        opacity: 0.7;
-    }
-
-    50% {
-        transform: scale(1.2);
+        transform: scale(1);
         opacity: 1;
     }
 
+    50% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+
     100% {
-        transform: scale(0.9);
-        opacity: 0.7;
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* Crowd icons with fade/blink */
+.crowd-icon {
+    font-size: 1.5rem;
+    transition: opacity 0.5s ease-in-out;
+    opacity: 1;
+}
+
+.fade-in {
+    animation: fadeIn 0.8s ease-out;
+}
+
+.blink {
+    animation: blinkAnim 1s step-end infinite alternate;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes blinkAnim {
+    0% {
+        filter: brightness(200%);
+    }
+
+    100% {
+        filter: brightness(100%);
     }
 }
 
@@ -48,60 +152,50 @@
     }
 }
 
+/* Neon / Glow / Luxe */
+.neon-text {
+    color: #00fff7;
+    text-shadow: 0 0 5px #00fff7, 0 0 10px #00fff7, 0 0 20px #00fff7, 0 0 40px #ff00ff;
+}
 
+.neon-glow {
+    box-shadow: 0 0 8px #00fff7aa, 0 0 16px #ff00ffaa;
+    border-radius: 12px;
+}
 
+.glow-animation {
+    animation: neonPulse 2.5s ease-in-out infinite;
+}
 
+@keyframes neonPulse {
+    0%, 100% {
+        box-shadow: 0 0 8px #00fff777, 0 0 16px #ff00ff77;
+    }
 
+    50% {
+        box-shadow: 0 0 16px #00fff7cc, 0 0 32px #ff00ffcc;
+    }
+}
 
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0,255,247,0.1), 0 0 20px rgba(255,0,255,0.1);
+}
 
+/* Leaflet adaptation */
+.leaflet-container {
+    background: #0f0f0f;
+    border-radius: 12px;
+    box-shadow: 0 0 16px #00fff733;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*// Copyrigtht (c) 2025 Citizen Hackathon https://github.com/POLLESSI/Citizenhackathon2025V3.Blazor.Client. All rights reserved.*/
+.leaflet-popup-content-wrapper {
+    background: rgba(15,15,15,0.95);
+    color: #f5f5f5;
+    border: 1px solid #00fff755;
+    border-radius: 12px;
+    font-family: 'Poppins', sans-serif;
+}

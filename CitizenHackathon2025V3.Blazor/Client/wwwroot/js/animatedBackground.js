@@ -6,7 +6,7 @@
 
     if (!svg || !stop1 || !stop2) return;
 
-    // Animation des couleurs
+    // Color animation
     let hue = 0;
     setInterval(() => {
         hue = (hue + 1) % 360;
@@ -16,7 +16,7 @@
         stop2.setAttribute("stop-color", color2);
     }, 50);
 
-    // Effet parallax souris
+    // Mouse parallax effect
     document.addEventListener("mousemove", (e) => {
         const x = (e.clientX / window.innerWidth - 0.5) * 10;
         const y = (e.clientY / window.innerHeight - 0.5) * 10;
@@ -27,7 +27,7 @@
         svg.style.transform = "rotateX(0deg) rotateY(0deg)";
     });
 
-    // Réagir au scroll (zoom ou déformation)
+    // React to scroll (zoom or deformation)
     document.addEventListener("scroll", () => {
         const scrollY = window.scrollY;
         const intensity = Math.min(scrollY / 1000, 1); // max 1

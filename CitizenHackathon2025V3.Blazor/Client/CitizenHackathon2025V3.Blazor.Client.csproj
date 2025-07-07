@@ -1,9 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+	<TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	<SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+	<OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +20,14 @@
 
   <ItemGroup>
     <Folder Include="Shared\" />
+    <Folder Include="wwwroot\css\fonts\" />
+    <Folder Include="wwwroot\Scripts\" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <Content Update="wwwroot\js\**\*.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <!--<ItemGroup>

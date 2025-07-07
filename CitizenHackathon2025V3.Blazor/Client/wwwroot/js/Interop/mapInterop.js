@@ -1,78 +1,83 @@
-﻿hubConnection.On < WazeFeed > ("ReceiveTraffic", feed => {
-    TrafficInfo = $"{feed.Jams.Count} slowdowns, {feed.Alerts.Count} alerts";
-    StateHasChanged();
-});
-window.mapInterop = {
-    markers: {},
-    iconCache: {},
+﻿const iconCache = {};
 
-    getIcon(level) {
-        if (this.iconCache[level]) return this.iconCache[level];
-
-        const colorMap = {
-            1: "green",
-            2: "orange",
-            3: "red"
-        };
-        const icon = L.divIcon({
-            className: 'traffic-icon',
-            html: `<div class='pulse-${colorMap[level]}'></div>`,
-            iconSize: [16, 16]
-        });
-
-        this.iconCache[level] = icon;
-        return icon;
+// Color according to level
+function getLevelColor(level) {
+    switch (level) {
+        case 1: return "green";    // Weak
+        case 2: return "orange";   // Moderate
+        case 3: return "red";      // Pupil
+        default: return "gray";
     }
 }
-window.mapInterop = (function () {
-    let map;
+
+// Creating a custom icon with a pulsing effect
+function getLevelIcon(level) {
+    if (iconCache[level]) return iconCache[level];
+
+    const color = getLevelColor(level);
+    const icon = L.divIcon({
+        className: 'traffic-icon',
+        html: `<div class="pulse-${color}"></div>`,
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
+        popupAnchor: [0, -10]
+    });
+
+    iconCache[level] = icon;
+    return icon;
+}
+
+// Interop global
+window.mapInterop = (() => {
+    let map = null;
     let markers = [];
 
-    function getLevelColor(level) {
-        switch (level) {
-            case 1: return 'green';    // Low
-            case 2: return 'orange';   // Medium
-            case 3: return 'red';      // High
-            default: return 'gray';
+    function initMap(mapId = "leaflet-map", lat = 50.894966, lng = 4.341545, zoom = 13) {
+        if (map) return;
+
+        const mapElement = document.getElementById(mapId);
+        if (!mapElement) {
+            console.warn(`❌ Élément #${mapId} introuvable dans le DOM.`);
+            return;
         }
+
+        map = L.map(mapId).setView([lat, lng], zoom);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+    }
+
+    function updateTrafficMarkers(events = []) {
+        if (!map) {
+            console.warn("❌ La carte n'est pas encore initialisée.");
+            return;
+        }
+
+        // Deleting old markers
+        markers.forEach(marker => map.removeLayer(marker));
+        markers = [];
+
+        // Adding new markers
+        events.forEach(e => {
+            const marker = L.marker([e.latitude, e.longitude], {
+                icon: getLevelIcon(e.level)
+            }).bindPopup(`
+                <strong>${e.description}</strong><br/>
+                ${new Date(e.timestamp).toLocaleString()}
+            `);
+
+            marker.addTo(map);
+            markers.push(marker);
+        });
     }
 
     return {
-        initMap: function () {
-            if (map) return; // already initialized
-
-            map = L.map('leaflet-map').setView([48.8566, 2.3522], 11); // Paris
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
-            }).addTo(map);
-        },
-        updateTrafficMarkers: function (events) {
-            if (!map) {
-                console.warn("Map not initialized yet.");
-                return;
-            }
-
-            // Deletes old markers
-            markers.forEach(m => map.removeLayer(m));
-            markers = [];
-
-            events.forEach(e => {
-                const marker = L.circleMarker([e.latitude, e.longitude], {
-                    radius: 10,
-                    color: getLevelColor(e.level),
-                    fillOpacity: 0.8
-                }).bindPopup(`<strong>${e.description}</strong><br>${new Date(e.timestamp).toLocaleString()}`);
-
-                marker.addTo(map);
-                markers.push(marker);
-            });
-        }
+        initMap,
+        updateTrafficMarkers
     };
 })();
-}
 
-
+/*export { getLevelColor, getLevelIcon };*/
 
 
 

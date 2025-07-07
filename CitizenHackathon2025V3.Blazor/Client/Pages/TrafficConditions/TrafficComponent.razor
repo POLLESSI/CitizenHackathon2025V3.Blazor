@@ -2,6 +2,11 @@
 @using CitizenHackathon2025V3.Blazor.Client.Services
 @using CitizenHackathon2025V3.Blazor.Client.Utils
 @inject TrafficServiceBlazor TrafficService
+@inject Blazored.Toast.Services.IToastService ToastService
+
+@* <button class="btn btn-primary" @onclick="() => ToastService.ShowSuccess(" It works !", "Success" )">
+    Test the toast
+</button> *@
 
 <h3>Traffic Events</h3>
 

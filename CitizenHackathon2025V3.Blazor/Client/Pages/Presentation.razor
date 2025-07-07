@@ -1,5 +1,10 @@
 ﻿@page "/presentation"
 @inject IJSRuntime JS
+@inject Blazored.Toast.Services.IToastService ToastService
+
+@* <button class="btn btn-primary" @onclick="() => ToastService.ShowSuccess(" It works !", "Success" )">
+    Test the toast
+</button> *@
 
 <PageTitle>Presentation - OutZen</PageTitle>
 

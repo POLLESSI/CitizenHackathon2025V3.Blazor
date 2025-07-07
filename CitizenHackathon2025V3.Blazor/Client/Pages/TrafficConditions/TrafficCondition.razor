@@ -2,6 +2,11 @@
 @using CitizenHackathon2025V3.Blazor.Client;
 @using CitizenHackathon2025V3.Blazor.Client.Models
 @inject IJSRuntime js
+@inject Blazored.Toast.Services.IToastService ToastService
+
+@* <button class="btn btn-primary" @onclick="() => ToastService.ShowSuccess(" It works !", "Success" )">
+    Test the toast
+</button> *@
 
 <span class="fas fa-certificate me-2"></span> TrafficConditions
 
@@ -71,6 +76,11 @@
         currentIndex += batchSize;
     }
 
+    //hubConnection.On < WazeFeed > ("ReceiveTraffic", feed => {
+    //    TrafficInfo = $"{feed.Jams.Count} slowdowns, {feed.Alerts.Count} alerts";
+    //    StateHasChanged();
+    //});
+
     private async Task HandleScroll()
     {
         var scrollTop = await JS.InvokeAsync<int>("getScrollTop", ScrollContainerRef);
@@ -86,8 +96,6 @@
             }
         }
     }
-    [Inject]
-    private IJSRuntime JS { get; set; }
 }
 
 

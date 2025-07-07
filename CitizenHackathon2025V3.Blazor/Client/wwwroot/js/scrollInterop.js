@@ -1,21 +1,13 @@
-﻿window.getScrollTop = (elementId) => {
-    const el = document.getElementById(elementId);
-    if (el) {
-        return el.scrollTop;
+﻿window.scrollInterop = {
+    getScrollTop: () => window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0,
+    getScrollHeight: (elementId) => {
+        const el = document.getElementById(elementId);
+        return el ? el.scrollHeight : 0;
+    },
+    getClientHeight: (elementId) => {
+        const el = document.getElementById(elementId);
+        return el ? el.clientHeight : 0;
     }
-    return 0;
-};
-window.getScrollTop = () => {
-    return window.pageYOffset
-        || document.documentElement.scrollTop
-        || document.body.scrollTop
-        || 0;
-};
-window.getScrollHeight = (element) => {
-    return element ? element.scrollHeight : 0;
 };
 
-window.getClientHeight = (element) => {
-    return element ? element.clientHeight : 0;
-};
 

@@ -8,8 +8,6 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-//builder.Services.AddHttpClient("CitizenHackathon2025V3.Blazor.ServerAPI", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
-// Supply HttpClient instances that include access tokens when making requests to the server project
 builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri("https://localhost:7254/")
@@ -21,6 +19,7 @@ builder.Services.AddScoped<PlaceService>();
 builder.Services.AddScoped<SuggestionService>();
 builder.Services.AddScoped<TrafficConditionService>();
 builder.Services.AddSingleton<TrafficServiceBlazor>();
+builder.Services.AddSingleton<TrafficSignalRService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<WeatherForecastService>();
 builder.Services.AddBlazoredToast();

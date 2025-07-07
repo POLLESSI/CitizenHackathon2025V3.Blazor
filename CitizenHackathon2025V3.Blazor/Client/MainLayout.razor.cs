@@ -18,22 +18,22 @@ namespace CitizenHackathon2025V3.Blazor.Client
             return "/images/night.jpg";
         }
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            if (firstRender)
-            {
-                try
-                {
-                    //Debug
-                    await Task.Delay(100);
-                    await JSRuntime.InvokeVoidAsync("initParallax");
-                }
-                catch (JSException jsEx)
-                {
-                    Console.WriteLine($"Error JSInterop : {jsEx.Message}");
-                }
-            }
-        }
+        //protected override async Task OnAfterRenderAsync(bool firstRender)
+        //{
+        //    if (firstRender)
+        //    {
+        //        try
+        //        {
+        //            //Debug
+        //            await Task.Delay(100);
+        //            await JSRuntime.InvokeVoidAsync("initParallax");
+        //        }
+        //        catch (JSException jsEx)
+        //        {
+        //            Console.WriteLine($"Error JSInterop : {jsEx.Message}");
+        //        }
+        //    }
+        //}
 
     }
 }

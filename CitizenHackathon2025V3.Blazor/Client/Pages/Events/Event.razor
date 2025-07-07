@@ -1,6 +1,11 @@
 ﻿@page "/event"
 @using CitizenHackathon2025V3.Blazor.Client.Models;
 @inject IJSRuntime js
+@inject Blazored.Toast.Services.IToastService ToastService
+
+@* <button class="btn btn-primary" @onclick="() => ToastService.ShowSuccess(" It works !", "Success" )">
+    Test the toast
+</button> *@
 
 <span class="fas fa-certificate me-2"></span> Events
 
@@ -85,8 +90,8 @@
         }
     }
 
-    [Inject]
-    private IJSRuntime JS { get; set; }
+    // [Inject]
+    // private IJSRuntime JS { get; set; }
 }
 
 

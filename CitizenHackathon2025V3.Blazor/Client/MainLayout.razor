@@ -1,55 +1,75 @@
 ﻿@inherits LayoutComponentBase
+@using Blazored.Toast
+@using Blazored.Toast.Configuration
+@using Blazored.Toast.Services
 
-<div class="layout-background"></div>
+<button class="btn btn-primary" @onclick="ShowTestToast">
+    Test the toast
+</button>
 
-@* <div class="@($"main-layout {(IsDarkMode ? "dark-mode" : "")}")">
-    ...
-</div> *@
+@* <BlazoredToast ToastId="Toast1" Position="ToastPosition.TopRight" /> *@
 
-<div class="background-svg">
-    <img src="/svg/animated-bg.svg" alt="Animated Background" />
-</div>
-
-<div class="dynamic-bg" style="background-image: url('@GetBackgroundImage()');"></div>
-
-<div class="layout-container">
-    <aside class="sidebar">
+<main class="layout-container">
+    <header class="main-header">
         <NavMenu />
-    </aside>
-    <main class="main-content">
-        <header class="top-row">
-            @* <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a> *@
-            @* <h4 class="app-title">OutZen</h4> *@
-        </header>
-        <article class="content animate-on-scroll">
-            @Body
-        </article>
-        
-    </main>
-</div>
-<div class="svg-background">
-    <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
-        <defs>
-            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop id="stop1" offset="0%" stop-color="#00fff7" />
-                <stop id="stop2" offset="100%" stop-color="#ff00ff" />
-            </linearGradient>
-            <svg id="animated-svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
-                <defs>
-                    <pattern id="image-pattern" patternUnits="userSpaceOnUse" width="800" height="600">
-                        <image href="/images/background.jpg" x="0" y="0" width="800" height="600" />
-                    </pattern>
-                </defs>
-                <rect id="svg-rect" width="800" height="600" fill="url(#image-pattern)">
-                    <animateTransform attributeName="transform" type="rotate" from="0 400 300" to="360 400 300" dur="60s" repeatCount="indefinite" />
-                </rect>
-            </svg>
-        </defs>
-        <rect width="800" height="600" fill="url(#gradient)">
-            <animateTransform attributeName="transform" type="rotate" from="0 400 300" to="360 400 300" dur="60s" repeatCount="indefinite" />
-        </rect>
-    </svg>
-</div>
+    </header>
+
+    <section class="layout-body">
+        @Body
+    </section>
+
+    <footer class="main-footer">
+        <p>© @DateTime.Now.Year - OutZen by CitizenHackathon2025 🇧🇪</p>
+    </footer>
+
+    <!-- Canvas for animated decor -->
+    <canvas id="layoutBackgroundCanvas" width="800" height="400"></canvas>
+</main>
+
+@* <BlazoredToast ToastId="Toast2" Position="ToastPosition.BottomRight" /> *@
+
+@code {
+    [Inject] private IJSRuntime JsRuntime { get; set; } = default!;
+    [Inject] private IToastService ToastService { get; set; } = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        try
+        {
+            var module = await JsRuntime.InvokeAsync<IJSObjectReference>(
+                "import",
+                "./js/layoutCanvas.js"
+            );
+
+            await module.InvokeVoidAsync("startBackgroundCanvas");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ JS error in MainLayout: {ex.Message}");
+        }
+        if (firstRender)
+        {
+            try
+            {
+                var module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/layoutCanvas.js");
+                await module.InvokeVoidAsync("startBackgroundCanvas");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ JS error in MainLayout: {ex.Message}");
+            }
+        }
+    }
+    private void ShowTestToast()
+    {
+        ToastService.ShowSuccess("It works!"/* , "Success" */);
+    }
+}
+
+
+
 
 
 

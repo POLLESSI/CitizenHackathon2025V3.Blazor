@@ -4,7 +4,12 @@
 @using Microsoft.AspNetCore.SignalR.Client
 @inject IJSRuntime JS
 @inject NavigationManager Nav
+@inject Blazored.Toast.Services.IToastService ToastService
 @implements IAsyncDisposable
+
+@* <button class="btn btn-primary" @onclick="() => ToastService.ShowSuccess(" It works !", "Success" )">
+    Test the toast
+</button> *@
 
 <div class="filter-buttons">
     <button @onclick="() => FilterLevel = null">Tous</button>

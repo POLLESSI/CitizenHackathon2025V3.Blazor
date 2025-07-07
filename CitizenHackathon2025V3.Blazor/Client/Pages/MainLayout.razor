@@ -1,0 +1,52 @@
+﻿@inherits LayoutComponentBase
+@inject IJSRuntime JS
+@inject Blazored.Toast.Services.IToastService ToastService
+
+@* <button class="btn btn-primary" @onclick="() => ToastService.ShowSuccess(" It works !", "Success" )">
+    Test the toast
+</button> *@
+
+<div class="layout-root">
+    <canvas id="geometryCanvas" width="800" height="400" class="geometry-canvas"></canvas>
+
+    <div class="main-content scroll-container">
+        @Body
+    </div>
+
+    <div class="svg-background">
+        <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+            <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop id="stop1" offset="0%" stop-color="#00fff7" />
+                    <stop id="stop2" offset="100%" stop-color="#ff00ff" />
+                </linearGradient>
+            </defs>
+            <rect width="800" height="600" fill="url(#gradient)">
+                <animateTransform attributeName="transform" type="rotate" from="0 400 300" to="360 400 300" dur="60s" repeatCount="indefinite" />
+            </rect>
+        </svg>
+    </div>
+
+    <BlazoredToast />
+</div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                // Calls to global JSInterop modules
+                await JS.InvokeVoidAsync("GeometryCanvas.init"); // init shapes
+                await JS.InvokeVoidAsync("initializeLeafletMap"); // mini card
+                await JS.InvokeVoidAsync("initScrollAnimations");
+                await JS.InvokeVoidAsync("signalrInterop.startConnection", "/crowdHub");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erreur JS dans MainLayout: " + ex.Message);
+            }
+        }
+    }
+}

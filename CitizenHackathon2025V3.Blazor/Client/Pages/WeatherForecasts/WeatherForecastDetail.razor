@@ -1,4 +1,10 @@
-﻿<h3>Weather Forecast Detail</h3>
+﻿@inject Blazored.Toast.Services.IToastService ToastService
+
+@* <button class="btn btn-primary" @onclick="() => ToastService.ShowSuccess(" It works !", "Success" )">
+    Test the toast
+</button> *@
+
+<h3>Weather Forecast Detail</h3>
 
 @if (CurrentWeatherForecast is not null)
 {
