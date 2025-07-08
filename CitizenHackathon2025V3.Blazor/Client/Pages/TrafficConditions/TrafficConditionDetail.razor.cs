@@ -1,6 +1,8 @@
 ﻿using CitizenHackathon2025V3.Blazor.Client.Models;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Pages.TrafficConditions
 {
@@ -21,7 +23,7 @@ namespace CitizenHackathon2025V3.Blazor.Client.Pages.TrafficConditions
         {
             if (Id <= 0) return;
 
-            using (HttpResponseMessage message = await Client.GetAsync($"api/trafficconditions/{Id}"))
+            using (HttpResponseMessage message = await Client.GetAsync($"api/TrafficCondition/{Id}"))
             {
                 if (message.IsSuccessStatusCode)
                 {

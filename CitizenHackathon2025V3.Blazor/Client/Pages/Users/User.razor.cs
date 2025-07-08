@@ -3,6 +3,10 @@ using CitizenHackathon2025V3.Blazor.Client.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+using System.Net.Http;
+using System.Collections.Generic;
+using System;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Pages.Users
 {
@@ -21,10 +25,10 @@ namespace CitizenHackathon2025V3.Blazor.Client.Pages.Users
         {
             Users = (await UserService.GetAllActiveUsersAsync()).ToList();
             hubConnection = new HubConnectionBuilder()
-                .WithUrl(new Uri("https://localhost:7254/hubs/userHub"))
+                .WithUrl(new Uri("https://localhost:7254/Hubs/Hubs/UserHub"))
                 .Build();
 
-            hubConnection.On("notifyuser", async () =>
+            hubConnection.On("UserRegistered", async () =>
             {
                 Users = (await UserService.GetAllActiveUsersAsync()).ToList();
                 StateHasChanged();

@@ -28,7 +28,7 @@
     protected override async Task OnInitializedAsync()
     {
         hubConnection = new HubConnectionBuilder()
-            .WithUrl(Nav.ToAbsoluteUri("/trafficHub"))
+            .WithUrl(Nav.ToAbsoluteUri("/TrafficHub"))
             .WithAutomaticReconnect()
             .Build();
 

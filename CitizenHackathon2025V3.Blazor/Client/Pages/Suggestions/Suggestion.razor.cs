@@ -3,6 +3,10 @@ using CitizenHackathon2025V3.Blazor.Client.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Text.Json.Serialization;
+using System.Net.Http;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Pages.Suggestions
 {
@@ -21,10 +25,10 @@ namespace CitizenHackathon2025V3.Blazor.Client.Pages.Suggestions
         {
             Suggestions = (await SuggestionService.GetLatestSuggestionAsync()).ToList();
             hubConnection = new HubConnectionBuilder()
-                .WithUrl(new Uri("https://localhost:7254/hubs/suggestionHub"))
+                .WithUrl(new Uri("https://localhost:7254/Hubs/Hubs/SuggestionHub"))
                 .Build();
 
-            hubConnection.On("notifysuggestion", async () =>
+            hubConnection.On("NotifyNewSuggestion", async () =>
             {
                 Suggestions = (await SuggestionService.GetLatestSuggestionAsync()).ToList();
                 StateHasChanged();

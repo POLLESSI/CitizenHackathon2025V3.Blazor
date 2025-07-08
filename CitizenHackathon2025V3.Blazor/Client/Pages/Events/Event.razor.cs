@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Text.Json.Serialization;
-using Microsoft.AspNet.SignalR.Client;
+using System.Collections.Generic;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Pages.Events
 {
@@ -12,7 +15,7 @@ namespace CitizenHackathon2025V3.Blazor.Client.Pages.Events
     {
 #nullable disable
         [Inject]
-        public HttpClient Client { get; set; }  // Injection HttpClient
+        public HttpClient Client { get; set; } 
         [Inject] public EventService EventService { get; set; }
         [Inject] public NavigationManager Navigation { get; set; }
         public List<EventModel> Events { get; set; } = new();
@@ -23,11 +26,11 @@ namespace CitizenHackathon2025V3.Blazor.Client.Pages.Events
             if (hubConnection == null)
             {
                 hubConnection = new HubConnectionBuilder()
-                    .WithUrl(Navigation.ToAbsoluteUri("/hubs/eventHub"))
+                    .WithUrl(Navigation.ToAbsoluteUri("Hubs/Hubs/EventHub"))
                     .WithAutomaticReconnect()
                     .Build();
 
-                hubConnection.On<string>("ReceiveEvent", HandleEvent);
+                hubConnection.On<string>("NewEvent", HandleEvent);
 
                 await hubConnection.StartAsync();
             }

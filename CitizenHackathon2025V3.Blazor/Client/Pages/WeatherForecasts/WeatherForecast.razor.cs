@@ -3,6 +3,10 @@ using CitizenHackathon2025V3.Blazor.Client.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Text.Json.Serialization;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Pages.WeatherForecasts
 {
@@ -21,10 +25,10 @@ namespace CitizenHackathon2025V3.Blazor.Client.Pages.WeatherForecasts
         {
             WeatherForecasts = (await WeatherForecastService.GetLatestWeatherForecastAsync()).ToList();
             hubConnection = new HubConnectionBuilder()
-                .WithUrl(new Uri("https://localhost:7254/hubs/weatherforecastHub"))
+                .WithUrl(new Uri("https://localhost:7254/Hubs/Hubs/WeatherForecastHub"))
                 .Build();
 
-            hubConnection.On("notifyuser", async () =>
+            hubConnection.On("NewWeatherForecast", async () =>
             {
                 WeatherForecasts = (await WeatherForecastService.GetLatestWeatherForecastAsync()).ToList();
                 StateHasChanged();

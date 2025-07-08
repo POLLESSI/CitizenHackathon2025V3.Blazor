@@ -3,6 +3,10 @@ using CitizenHackathon2025V3.Blazor.Client.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Text.Json.Serialization;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Pages.CrowdInfos
 {
@@ -21,10 +25,10 @@ namespace CitizenHackathon2025V3.Blazor.Client.Pages.CrowdInfos
         {
             CrowdInfos = (await CrowdInfoService.GetAllCrowdInfoAsync()).ToList();
             hubConnection = new HubConnectionBuilder()
-                .WithUrl(new Uri("https://localhost:7254/hubs/crowdHub"))
+                .WithUrl(new Uri("https://localhost:7254/Hubs/hubs/CrowdHub"))
                 .Build();
 
-            hubConnection.On("notifynewcrowdinfo", async () =>
+            hubConnection.On("notifynewCrowd", async () =>
             {
                 CrowdInfos = (await CrowdInfoService.GetAllCrowdInfoAsync()).ToList();
                 StateHasChanged();

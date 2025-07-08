@@ -3,6 +3,10 @@ using CitizenHackathon2025V3.Blazor.Client.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Text.Json.Serialization;
+using System.Net.Http;
+using System.Collections.Generic;
+using System;
+using System.Threading.Tasks;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Pages.TrafficConditions
 {
@@ -21,10 +25,10 @@ namespace CitizenHackathon2025V3.Blazor.Client.Pages.TrafficConditions
         {
             TrafficConditions = (await TrafficConditionService.GetLatestTrafficConditionAsync()).ToList();
             hubConnection = new HubConnectionBuilder()
-                .WithUrl(new Uri("https://localhost:7254/hubs/trafficHub"))
+                .WithUrl(new Uri("https://localhost:7254/Hubs/Hubs/TrafficHub"))
                 .Build();
 
-            hubConnection.On("notifytrafficcondition", async () =>
+            hubConnection.On("notifynewtraffic", async () =>
             {
                 TrafficConditions = (await TrafficConditionService.GetLatestTrafficConditionAsync()).ToList();
                 StateHasChanged();

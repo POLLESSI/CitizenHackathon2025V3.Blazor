@@ -3,13 +3,15 @@ using CitizenHackathon2025V3.Blazor.Client.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Text.Json.Serialization;
+using System.Net.Http;
+using System.Collections.Generic;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Pages.GptInteractions
 {
     public partial class GptInteraction
     {
 #nullable disable
-        public HttpClient Client { get; set; }  // Injection HttpClient
+        public HttpClient Client { get; set; } 
         [Inject] public GptInteractionService GptInteractionService { get; set; }
         [Inject] public NavigationManager Navigation { get; set; }
 
@@ -17,21 +19,21 @@ namespace CitizenHackathon2025V3.Blazor.Client.Pages.GptInteractions
         public int SelectedId { get; set; }
         public HubConnection hubConnection { get; set; }
 
-        protected override async Task OnInitializedAsync()
-        {
-            //GptInteractions = (await GptInteractionService.GetAllSuggestionsAsync()).ToList();
-            //hubConnection = new HubConnectionBuilder()
-            //    .WithUrl(new Uri("https://localhost:7254/hubs/aisuggestionhub"))
-            //    .Build();
+        //protected override async Task OnInitializedAsync()
+        //{
+        //    GptInteractions = (await GptInteractionService.GetAllSuggestionsAsync()).ToList();
+        //    hubConnection = new HubConnectionBuilder()
+        //        .WithUrl(new Uri("https://localhost:7254/Hubs/Hubs/AISuggestionHub"))
+        //        .Build();
 
-            //hubConnection.On("notifynewgptinteraction", async () =>
-            //{
-            //    GptInteractions = (await GptInteractionService.GetAllSuggestionsAsync()).ToList();
-            //    StateHasChanged();
-            //});
+        //    hubConnection.On("notifynewgptinteraction", async () =>
+        //    {
+        //        GptInteractions = (await GptInteractionService.GetAllSuggestionsAsync()).ToList();
+        //        StateHasChanged();
+        //    });
 
-            await hubConnection.StartAsync();
-        }
+        //    await hubConnection.StartAsync();
+        //}
         private void ClickInfo(int id) => SelectedId = id;
     }
 }

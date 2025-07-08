@@ -5,7 +5,7 @@ VisualStudioVersion = 17.14.36221.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CitizenHackathon2025V3.Blazor.Client", "CitizenHackathon2025V3.Blazor\Client\CitizenHackathon2025V3.Blazor.Client.csproj", "{314C31E4-9775-49A9-A434-AC9C4104B63B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elements de solution", "Elements de solution", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution elements", "Solution elements", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 	ProjectSection(SolutionItems) = preProject
 		Deploiement.txt = Deploiement.txt
 		READme.md = READme.md

@@ -3,6 +3,10 @@ using CitizenHackathon2025V3.Blazor.Client.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+using System.Net.Http;
+using System.Collections.Generic;
+using System;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Pages.Places
 {
@@ -21,10 +25,10 @@ namespace CitizenHackathon2025V3.Blazor.Client.Pages.Places
         {
             Places = (await PlaceService.GetLatestPlaceAsync()).ToList();
             hubConnection = new HubConnectionBuilder()
-                .WithUrl(new Uri("https://localhost:7254/hubs/placeHub"))
+                .WithUrl(new Uri("https://localhost:7254/Hubs/Hubs/PlaceHub"))
                 .Build();
 
-            hubConnection.On("notifyplace", async () =>
+            hubConnection.On("NotifyNewPlace", async () =>
             {
                 Places = (await PlaceService.GetLatestPlaceAsync()).ToList();
                 StateHasChanged();

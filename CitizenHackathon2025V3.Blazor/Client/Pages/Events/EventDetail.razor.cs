@@ -1,6 +1,8 @@
 ﻿using CitizenHackathon2025V3.Blazor.Client.Models;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Pages.Events
 {
@@ -20,7 +22,7 @@ namespace CitizenHackathon2025V3.Blazor.Client.Pages.Events
         private async Task GetEvent()
         {
             if (Id <= 0) return;
-            using (HttpResponseMessage message = await Client.GetAsync($"api/events/{Id}"))
+            using (HttpResponseMessage message = await Client.GetAsync($"api/Event/{Id}"))
             {
                 if (message.IsSuccessStatusCode)
                 {
