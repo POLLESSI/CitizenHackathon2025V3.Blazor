@@ -1,41 +1,19 @@
 ﻿using CitizenHackathon2025V3.Blazor.Client.Services;
 using CitizenHackathon2025V3.Blazor.Client.Models;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.SignalR.Client;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using System.Net.Http;
-using System.Collections.Generic;
-using System;
+using CitizenHackathon2025V3.Blazor.Client.Common.SignalR;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Pages.Users
 {
-    public partial class User
+    public partial class User : SignalRComponentBase<UserModel>
     {
-    #nullable disable
-        public HttpClient Client { get; set; }  // Injection HttpClient
         [Inject] public UserService UserService { get; set; }
-        [Inject] public NavigationManager Navigation { get; set; }
 
-        public List<UserModel> Users { get; set; } = new();
-        public int SelectedId { get; set; }
-        public HubConnection hubConnection { get; set; }
-
-        protected override async Task OnInitializedAsync()
-        {
-            Users = (await UserService.GetAllActiveUsersAsync()).ToList();
-            hubConnection = new HubConnectionBuilder()
-                .WithUrl(new Uri("https://localhost:7254/Hubs/Hubs/UserHub"))
-                .Build();
-
-            hubConnection.On("UserRegistered", async () =>
-            {
-                Users = (await UserService.GetAllActiveUsersAsync()).ToList();
-                StateHasChanged();
-            });
-
-            await hubConnection.StartAsync();
-        }
+        protected override string HubUrl => "/hubs/userhub";
+        protected override string HubEventName => "notifyNewUser";
+        protected override Task<List<UserModel>> LoadDataAsync()
+            => UserService.GetAllActiveUsersAsync().ContinueWith(t => t.Result.ToList());
+        private int SelectedId { get; set; } = -1;
         private void ClickInfo(int id) => SelectedId = id;
     }
 }

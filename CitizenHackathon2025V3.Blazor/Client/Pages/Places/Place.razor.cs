@@ -1,41 +1,20 @@
 ﻿using CitizenHackathon2025V3.Blazor.Client.Services;
 using CitizenHackathon2025V3.Blazor.Client.Models;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.SignalR.Client;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using System.Net.Http;
-using System.Collections.Generic;
-using System;
+using CitizenHackathon2025V3.Blazor.Client.Common.SignalR;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Pages.Places
 {
-    public partial class Place
+    public partial class Place : SignalRComponentBase<PlaceModel>
     {
     #nullable disable
-        public HttpClient Client { get; set; }  // Injection HttpClient
         [Inject] public PlaceService PlaceService { get; set; }
-        [Inject] public NavigationManager Navigation { get; set; }
 
-        public List<PlaceModel> Places { get; set; } = new();
-        public int SelectedId { get; set; }
-        public HubConnection hubConnection { get; set; }
-
-        protected override async Task OnInitializedAsync()
-        {
-            Places = (await PlaceService.GetLatestPlaceAsync()).ToList();
-            hubConnection = new HubConnectionBuilder()
-                .WithUrl(new Uri("https://localhost:7254/Hubs/Hubs/PlaceHub"))
-                .Build();
-
-            hubConnection.On("NotifyNewPlace", async () =>
-            {
-                Places = (await PlaceService.GetLatestPlaceAsync()).ToList();
-                StateHasChanged();
-            });
-
-            await hubConnection.StartAsync();
-        }
+        protected override string HubUrl => "/hubs/placehub";
+        protected override string HubEventName => "notifyNewPlace";
+        protected override Task<List<PlaceModel>> LoadDataAsync()
+            => PlaceService.GetLatestPlaceAsync().ContinueWith(t => t.Result.ToList());
+        private int SelectedId { get; set; } = -1;
         private void ClickInfo(int id) => SelectedId = id;
     }
 }

@@ -1,44 +1,26 @@
 ﻿using CitizenHackathon2025V3.Blazor.Client.Services;
 using CitizenHackathon2025V3.Blazor.Client.Models;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.SignalR.Client;
-using System.Text.Json.Serialization;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System;
+using CitizenHackathon2025V3.Blazor.Client.Common.SignalR;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Pages.WeatherForecasts
 {
-    public partial class WeatherForecast
+    public partial class WeatherForecast : SignalRComponentBase<WeatherForecastModel>
     {
     #nullable disable
-        public HttpClient Client { get; set; }  // Injection HttpClient
-        [Inject] public WeatherForecastService WeatherForecastService { get; set; }
-        [Inject] public NavigationManager Navigation { get; set; }
+        [Inject] public WeatherForecastService WeatherService { get; set; }
 
-        public List<WeatherForecastModel> WeatherForecasts { get; set; } = new();
-        public int SelectedId { get; set; }
-        public HubConnection hubConnection { get; set; }
+        protected override string HubUrl => "/hubs/weatherhub";
+        protected override string HubEventName => "notifyNewForecast";
+        protected override Task<List<WeatherForecastModel>> LoadDataAsync()
+            => WeatherService.GetLatestWeatherForecastAsync().ContinueWith(t => t.Result.ToList());
 
-        protected override async Task OnInitializedAsync()
-        {
-            WeatherForecasts = (await WeatherForecastService.GetLatestWeatherForecastAsync()).ToList();
-            hubConnection = new HubConnectionBuilder()
-                .WithUrl(new Uri("https://localhost:7254/Hubs/Hubs/WeatherForecastHub"))
-                .Build();
 
-            hubConnection.On("NewWeatherForecast", async () =>
-            {
-                WeatherForecasts = (await WeatherForecastService.GetLatestWeatherForecastAsync()).ToList();
-                StateHasChanged();
-            });
-
-            await hubConnection.StartAsync();
-        }
+        private int SelectedId { get; set; } = -1;
         private void ClickInfo(int id) => SelectedId = id;
     }
 }
+
 
 
 

@@ -1,43 +1,21 @@
 ﻿using CitizenHackathon2025V3.Blazor.Client.Services;
 using CitizenHackathon2025V3.Blazor.Client.Models;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.SignalR.Client;
-using System.Text.Json.Serialization;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System;
+using CitizenHackathon2025V3.Blazor.Client.Common.SignalR;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Pages.CrowdInfos
 {
-    public partial class CrowdInfo
+    public partial class CrowdInfo : SignalRComponentBase<CrowdInfoModel>
     {
     #nullable disable
-        public HttpClient Client { get; set; }  // Injection HttpClient
         [Inject] public CrowdInfoService CrowdInfoService { get; set; }
-        [Inject] public NavigationManager Navigation { get; set; }
 
-        public List<CrowdInfoModel> CrowdInfos { get; set; } = new();
-        public int SelectedId { get; set; }
-        public HubConnection hubConnection { get; set; }
-
-        protected override async Task OnInitializedAsync()
-        {
-            CrowdInfos = (await CrowdInfoService.GetAllCrowdInfoAsync()).ToList();
-            hubConnection = new HubConnectionBuilder()
-                .WithUrl(new Uri("https://localhost:7254/Hubs/hubs/CrowdHub"))
-                .Build();
-
-            hubConnection.On("notifynewCrowd", async () =>
-            {
-                CrowdInfos = (await CrowdInfoService.GetAllCrowdInfoAsync()).ToList();
-                StateHasChanged();
-            });
-
-            await hubConnection.StartAsync();
-        }
+        protected override string HubUrl => "/hubs/crowdhub";
+        protected override string HubEventName => "notifynewCrowd";
+        protected override Task<List<CrowdInfoModel>> LoadDataAsync()
+            => CrowdInfoService.GetAllCrowdInfoAsync().ContinueWith(t => t.Result.ToList());
+        private int SelectedId { get; set; } = -1;
         private void ClickInfo(int id) => SelectedId = id;
-
     }
 }
 

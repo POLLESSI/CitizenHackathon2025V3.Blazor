@@ -1,41 +1,21 @@
 ﻿using CitizenHackathon2025V3.Blazor.Client.Services;
 using CitizenHackathon2025V3.Blazor.Client.Models;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.SignalR.Client;
-using System.Text.Json.Serialization;
-using System.Net.Http;
-using System.Collections.Generic;
-using System;
-using System.Threading.Tasks;
+using CitizenHackathon2025V3.Blazor.Client.Common.SignalR;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Pages.TrafficConditions
 {
-    public partial class TrafficCondition
+    public partial class TrafficCondition : SignalRComponentBase<TrafficConditionModel>
     {
-    #nullable disable
-        public HttpClient Client { get; set; }  // Injection HttpClient
-        [Inject] public TrafficConditionService TrafficConditionService { get; set; }
-        [Inject] public NavigationManager Navigation { get; set; }
+    #nullable disable   
+        [Inject] public TrafficConditionService TrafficService { get; set; }
 
-        public List<TrafficConditionModel> TrafficConditions { get; set; } = new();
-        public int SelectedId { get; set; }
-        public HubConnection hubConnection { get; set; }
+        protected override string HubUrl => "/hubs/traffichub";
+        protected override string HubEventName => "notifyNewTraffic";
+        protected override Task<List<TrafficConditionModel>> LoadDataAsync()
+            => TrafficService.GetLatestTrafficConditionAsync().ContinueWith(t => t.Result.ToList());
 
-        protected override async Task OnInitializedAsync()
-        {
-            TrafficConditions = (await TrafficConditionService.GetLatestTrafficConditionAsync()).ToList();
-            hubConnection = new HubConnectionBuilder()
-                .WithUrl(new Uri("https://localhost:7254/Hubs/Hubs/TrafficHub"))
-                .Build();
-
-            hubConnection.On("notifynewtraffic", async () =>
-            {
-                TrafficConditions = (await TrafficConditionService.GetLatestTrafficConditionAsync()).ToList();
-                StateHasChanged();
-            });
-
-            await hubConnection.StartAsync();
-        }
+        private int SelectedId { get; set; } = -1;
         private void ClickInfo(int id) => SelectedId = id;
     }
 }

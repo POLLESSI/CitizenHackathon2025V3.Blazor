@@ -1,79 +1,63 @@
 ﻿@page "/weatherforecast"
-@using CitizenHackathon2025V3.Blazor.Client;
+@inherits SignalRComponentBase<WeatherForecastModel>
+@using CitizenHackathon2025V3.Blazor.Client.Common.SignalR
 @using CitizenHackathon2025V3.Blazor.Client.Models
-@inject IJSRuntime js
-@inject Blazored.Toast.Services.IToastService ToastService
+@inject IJSRuntime JS
 
-@* <button class="btn btn-primary" @onclick="() => ToastService.ShowSuccess(" It works !", "Success" )">
-    Test the toast
-</button> *@
+<h3>Weather Forecast Information</h3>
 
-<span class="fas fa-certificate me-2"></span> WeatherForecasts
-
-
-<h3>User</h3>
-
-<div class="table-wrapper draggable-container" @ref="ScrollContainerRef" @onscroll="HandleScroll" style="height: 300px; overflow-y: auto; border: 1px solid #444;">
-    <table class="table table-striped table-dark styled-table">
-        <thead>
-            <tr>
-                <th>Summary</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (WeatherForecastModel ce in WeatherForecasts)
-            {
-                <tr>
-                    <td>•</td>
-                    <td>@ce.Summary</td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-info" @onclick="() => ClickInfo(ce.Id)">Info</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
-
-
-<hr />
-
-@if(SelectedId > 0)
+@if (IsLoading)
 {
-    <div class="draggable-container detail-wrapper">
-        <WeatherForecastDetail id="SelectedId"></WeatherForecastDetail>
+    <p>Chargement...</p>
+}
+else if (!string.IsNullOrEmpty(ErrorMessage))
+{
+    <p class="text-danger">@ErrorMessage</p>
+}
+else
+{
+    <div class="table-wrapper" @ref="ScrollContainerRef" @onscroll="HandleScroll"
+         style="height: 300px; overflow-y: auto; border: 1px solid #444;">
+        <table class="table table-striped table-dark">
+            <thead>
+                <tr>
+                    <th>TemperatureC</th>
+                    <th>RainfallNm</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var info in VisibleItems)
+                {
+                    <tr>
+                        <td>@info.TemperatureC</td>
+                        <td>@info.RainfallNm</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 }
 
-<hr />
-
-<script src="https://cdn.jsdelivr.net/npm/tsparticles"></script>
-
 @code {
-#nullable disable
-    private List<WeatherForecastModel> allWeatherForecasts = new(); // All elements
-    private List<WeatherForecastModel> visibleWeatherForecasts = new(); // Those to display
-    private int batchSize = 5;
+    private List<WeatherForecastModel> visibleWeatherForecastInfos = new();
+    private int batchSize = 10;
     private int currentIndex = 0;
     private ElementReference ScrollContainerRef;
 
-    protected override void OnInitialized()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // Simulates a data source
-        for (int i = 1; i <= 50; i++)
+        if (firstRender)
         {
-            allWeatherForecasts.Add(new WeatherForecastModel { Id = i, Summary = $"WeatherForecast {i}" });
+            LoadMoreItems();
         }
-
-        LoadMoreItems();
     }
 
     private void LoadMoreItems()
     {
-        var nextItems = allWeatherForecasts.Skip(currentIndex).Take(batchSize);
-        visibleWeatherForecasts.AddRange(nextItems);
+        var nextBatch = Items.Skip(currentIndex).Take(batchSize);
+        visibleWeatherForecastInfos.AddRange(nextBatch);
         currentIndex += batchSize;
+        StateHasChanged();
     }
 
     private async Task HandleScroll()
@@ -82,18 +66,20 @@
         var scrollHeight = await JS.InvokeAsync<int>("getScrollHeight", ScrollContainerRef);
         var clientHeight = await JS.InvokeAsync<int>("getClientHeight", ScrollContainerRef);
 
-        if (scrollTop + clientHeight >= scrollHeight - 5)
+        if (scrollTop + clientHeight >= scrollHeight - 5 && currentIndex < Items.Count)
         {
-            if (currentIndex < allWeatherForecasts.Count)
-            {
-                LoadMoreItems();
-                StateHasChanged();
-            }
+            LoadMoreItems();
         }
     }
-    // [Inject]
-    // private IJSRuntime JS { get; set; }
+    protected override Task OnNewItemReceived(WeatherForecastModel model)
+    {
+        Console.WriteLine($"🆕 New item: {model.TemperatureC}");
+        visibleWeatherForecastInfos.Insert(0, model);
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
 }
+
 
 
 

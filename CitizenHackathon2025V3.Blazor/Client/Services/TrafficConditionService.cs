@@ -5,7 +5,7 @@ namespace CitizenHackathon2025V3.Blazor.Client.Services
 {
     public class TrafficConditionService
     {
-#nullable disable
+    #nullable disable
         private readonly HttpClient _httpClient;
 
         public TrafficConditionService(HttpClient httpClient)

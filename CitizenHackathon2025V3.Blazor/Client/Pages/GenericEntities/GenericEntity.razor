@@ -1,0 +1,76 @@
+﻿@page "/genericentity"
+@inject IJSRuntime JS
+@using CitizenHackathon2025V3.Blazor.Client.Models
+
+@* <h3>List of @typeof(TModel).Name</h3> *@
+<h3>GenericEntity</h3>
+
+@* @if (IsLoading)
+{
+    <p>Chargement...</p>
+}
+else if (!string.IsNullOrEmpty(ErrorMessage))
+{
+    <p class="text-danger">@ErrorMessage</p>
+}
+else
+{
+    <div class="table-wrapper" @ref="ScrollContainerRef" @onscroll="HandleScroll"
+         style="height: 300px; overflow-y: auto; border: 1px solid #444;">
+        <table class="table table-striped table-dark">
+            <thead>
+                <tr>
+                    <th>Propriété 1</th>
+                    <th>Propriété 2</th>
+                    <!-- Add the specific columns here -->
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in visibleItems)
+                {
+                    <tr>
+                        <td>@item.Propriete1</td>
+                        <td>@item.Propriete2</td>
+                        <!-- Add specific data here -->
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+} *@
+
+@code {
+    // private List<TModel> visibleItems = new();
+    // private int batchSize = 10;
+    // private int currentIndex = 0;
+    // private ElementReference ScrollContainerRef;
+
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if (firstRender)
+    //     {
+    //         LoadMoreItems();
+    //     }
+    // }
+
+    // private void LoadMoreItems()
+    // {
+    //     var nextBatch = Items.Skip(currentIndex).Take(batchSize);
+    //     visibleItems.AddRange(nextBatch);
+    //     currentIndex += batchSize;
+    //     StateHasChanged();
+    // }
+
+    // private async Task HandleScroll()
+    // {
+    //     var scrollTop = await JS.InvokeAsync<int>("getScrollTop", ScrollContainerRef);
+    //     var scrollHeight = await JS.InvokeAsync<int>("getScrollHeight", ScrollContainerRef);
+    //     var clientHeight = await JS.InvokeAsync<int>("getClientHeight", ScrollContainerRef);
+
+    //     if (scrollTop + clientHeight >= scrollHeight - 5 && currentIndex < Items.Count)
+    //     {
+    //         LoadMoreItems();
+    //     }
+    // }
+}
+

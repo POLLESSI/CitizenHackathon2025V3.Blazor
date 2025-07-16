@@ -1,39 +1,20 @@
 ﻿using CitizenHackathon2025V3.Blazor.Client.Services;
 using CitizenHackathon2025V3.Blazor.Client.Models;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.SignalR.Client;
-using System.Text.Json.Serialization;
-using System.Net.Http;
-using System.Collections.Generic;
+using CitizenHackathon2025V3.Blazor.Client.Common.SignalR;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Pages.GptInteractions
 {
-    public partial class GptInteraction
+    public partial class GptInteraction : SignalRComponentBase<GptInteractionModel>
     {
-#nullable disable
-        public HttpClient Client { get; set; } 
-        [Inject] public GptInteractionService GptInteractionService { get; set; }
-        [Inject] public NavigationManager Navigation { get; set; }
+        [Inject] public GptInteractionService GptService { get; set; }
 
-        public List<GptInteractionModel> GptInteractions { get; set; } = new();
-        public int SelectedId { get; set; }
-        public HubConnection hubConnection { get; set; }
+        protected override string HubUrl => "/hubs/gpthub";
+        protected override string HubEventName => "notifyNewGpt";
+        protected override Task<List<GptInteractionModel>> LoadDataAsync()
+            => GptService.GetAllInteractions().ContinueWith(t => t.Result.ToList());
 
-        //protected override async Task OnInitializedAsync()
-        //{
-        //    GptInteractions = (await GptInteractionService.GetAllSuggestionsAsync()).ToList();
-        //    hubConnection = new HubConnectionBuilder()
-        //        .WithUrl(new Uri("https://localhost:7254/Hubs/Hubs/AISuggestionHub"))
-        //        .Build();
-
-        //    hubConnection.On("notifynewgptinteraction", async () =>
-        //    {
-        //        GptInteractions = (await GptInteractionService.GetAllSuggestionsAsync()).ToList();
-        //        StateHasChanged();
-        //    });
-
-        //    await hubConnection.StartAsync();
-        //}
+        private int SelectedId { get; set; } = -1;
         private void ClickInfo(int id) => SelectedId = id;
     }
 }
