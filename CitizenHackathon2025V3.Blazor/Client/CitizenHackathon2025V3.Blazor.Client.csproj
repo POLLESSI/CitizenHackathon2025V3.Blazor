@@ -1,54 +1,49 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <OutputType>Exe</OutputType>
-    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<OutputType>Exe</OutputType>
+		<SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
 
-    <!-- AOT (Ahead-Of-Time) compilation enabled for Release only -->
-    <RunAOTCompilation Condition="'$(Configuration)' == 'Release'">true</RunAOTCompilation>
+		<!-- AOT (Ahead-Of-Time) compilation enabled for Release only -->
+		<RunAOTCompilation Condition="'$(Configuration)' == 'Release'">true</RunAOTCompilation>
 
-    <!-- Disable time zone support to reduce size -->
-    <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
+		<!-- Disable time zone support to reduce size -->
+		<BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
 
-    <!-- Trim to remove unused code -->
-    <PublishTrimmed>true</PublishTrimmed>
+		<!-- Trim to remove unused code -->
+		<PublishTrimmed>true</PublishTrimmed>
 
-    <!-- Force copy of service worker related files -->
-    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
-  </PropertyGroup>
+		<!-- Force copy of service worker related files -->
+		<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+	</PropertyGroup>
 
-  <!-- Automatic cleaning before each build (attention: impacts build speed) -->
-  <Target Name="CleanBeforeBuild" BeforeTargets="Build">
-    <RemoveDir Directories="$(BaseIntermediateOutputPath)" />
-    <RemoveDir Directories="$(BaseOutputPath)" />
-  </Target>
-	
-  <ItemGroup>
-    <!-- Main dependencies -->
-    <PackageReference Include="Blazored.Toast" Version="4.2.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.7" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.7" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
+	<Target Name="CleanBeforeBuild" BeforeTargets="Build">
+		<RemoveDir Directories="$(BaseIntermediateOutputPath)" />
+		<RemoveDir Directories="$(BaseOutputPath)" />
+	</Target>
 
-  <ItemGroup>
-    <!-- Automatic copying of JS files -->
-    <Content Update="wwwroot\js\**\*.js">
-		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <!-- (Optional) Copy of the web manifest if you have one -->
-    <Content Update="wwwroot\manifest.webmanifest">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Blazored.Toast" Version="4.2.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.7" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.7" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!--<Content Include="wwwroot\manifest.json" CopyToOutputDirectory="PreserveNewest" />-->
+		<!--<Content Update="wwwroot\js\**\*.js" CopyToOutputDirectory="PreserveNewest" />-->
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Shared\" />
+	</ItemGroup>
 
 </Project>
-
 
 <!--AOT (Ahead-Of-Time) compilation enabled for Release onlyDisable time zone support to reduce sizeTrim to remove unused codeForce copy of service worker related filesAutomatic cleaning before each build (attention: impacts build speed)Main dependenciesAutomatic copying of JS files(Optional) Copy of the web manifest if you have one-->
 
