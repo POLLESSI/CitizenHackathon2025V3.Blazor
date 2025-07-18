@@ -27,9 +27,52 @@
     flex-direction: column;
     min-height: 100vh;
     background-color: var(--background-color, #0d0d0d);
+    transition: background-color 1s ease-in-out, color 1s ease-in-out;
     color: var(--text-color, #f0f0f0);
     position: relative;
     z-index: 1;
+}
+.dynamic-bg {
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.85);
+    transition: filter 0.5s ease-in-out;
+    animation: fadeInBackground 2s ease-out;
+}
+/* Dawn (Before 8h) */
+.dawn-theme {
+    background-color: #ffe5b4;
+    color: #333;
+}
+.dawn-theme .dynamic-bg {
+    filter: brightness(0.95) sepia(0.1);
+}
+.day-theme .dynamic-bg {
+    filter: brightness(1);
+}
+
+/* Day (8h - 17h) */
+.day-theme {
+    background-color: #d9f2ff;
+    color: #222;
+}
+
+/* Sunset (17h - 20h) */
+.sunset-theme {
+    background: linear-gradient(135deg, #fdbb2d, #cf8bf3);
+    color: #fff;
+}
+.sunset-theme .dynamic-bg {
+    filter: brightness(0.9) sepia(0.2);
+}
+
+/* Night (After 20h) */
+.night-theme {
+    background: radial-gradient(ellipse at top, #0d1b2a, #1b263b);
+    color: #ddd;
+}
+.night-theme .dynamic-bg {
+    filter: brightness(0.6) contrast(1.2);
 }
 
 .layout-background {
@@ -130,6 +173,17 @@
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+@keyframes fadeInBackground {
+    from {
+        opacity: 0;
+        transform: scale(1.02);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
 }
 
@@ -257,6 +311,38 @@
     pointer-events: none;
     width: 100%;
     height: 300px;
+}
+.layout-root {
+    position: relative;
+    overflow-x: hidden;
+    font-family: 'Poppins', sans-serif;
+}
+
+.geometry-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+    background-color: #111;
+    pointer-events: none;
+}
+
+.main-content {
+    z-index: 1;
+    padding: 2rem;
+    position: relative;
+}
+
+.svg-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    opacity: 0.25;
 }
 
 

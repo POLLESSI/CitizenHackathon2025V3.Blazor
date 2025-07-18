@@ -7,65 +7,109 @@
     Test the toast
 </button>
 
-@* <BlazoredToast ToastId="Toast1" Position="ToastPosition.TopRight" /> *@
+<div class="background-svg">
+    <img src="/svg/animated-bg.svg" alt="Animated Background" />
+</div>
 
-<main class="layout-container">
-    <header class="main-header">
-        <NavMenu />
-    </header>
+<div class="dynamic-bg" style="background-image: url('@GetBackgroundImage()');"></div>
 
-    <section class="layout-body">
-        @Body
-    </section>
+<div class="layout-container">
+    <main class="sidebar">
+        <header class="main-header">
+            <NavMenu />
+        </header>
 
-    <footer class="main-footer">
-        <p>© @DateTime.Now.Year - OutZen by CitizenHackathon2025 🇧🇪</p>
-    </footer>
+        <section class="layout-body">
+            <article class="content animate-on-scroll">
+                @Body
+            </article>
+        </section>
+        <div class="layout-container @GetTimeOfDayClass()">
+            ...
+        </div>
+        <div class="dynamic-bg @GetTimeClass()" style="background-image: url('@GetBackgroundImage()');"></div>
 
-    <!-- Canvas for animated decor -->
-    <canvas id="layoutBackgroundCanvas" width="800" height="400"></canvas>
-</main>
+        <footer class="main-footer">
+            <p>© @DateTime.Now.Year - OutZen by CitizenHackathon2025 🇧🇪</p>
+        </footer>
+
+        <canvas id="layoutBackgroundCanvas" width="800" height="400"></canvas>
+    </main>
+</div>
+
+<!-- Les SVG décoratifs -->
+<div class="svg-background">
+    <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+        <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop id="stop1" offset="0%" stop-color="#00fff7" />
+                <stop id="stop2" offset="100%" stop-color="#ff00ff" />
+            </linearGradient>
+            <pattern id="image-pattern" patternUnits="userSpaceOnUse" width="800" height="600">
+                <image href="/images/background.jpg" x="0" y="0" width="800" height="600" />
+            </pattern>
+        </defs>
+        <rect id="svg-rect" width="800" height="600" fill="url(#image-pattern)">
+            <animateTransform attributeName="transform" type="rotate" from="0 400 300" to="360 400 300" dur="60s" repeatCount="indefinite" />
+        </rect>
+        <rect width="800" height="600" fill="url(#gradient)">
+            <animateTransform attributeName="transform" type="rotate" from="0 400 300" to="360 400 300" dur="60s" repeatCount="indefinite" />
+        </rect>
+    </svg>
+</div>
+
+<div class="orbit">
+    <div class="parallax-bg">Dynamic Background</div>
+    <div class="figurine"></div>
+</div>
+
+<div class="svg-dynamic-bg">
+    <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+        <defs>
+            <radialGradient id="grad1" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="hsl(340, 100%, 60%)" />
+                <stop offset="100%" stop-color="hsl(200, 100%, 10%)" />
+            </radialGradient>
+        </defs>
+        <circle cx="400" cy="300" r="400" fill="url(#grad1)" />
+    </svg>
+</div>
+
+<div class="scroll-reveal">Content to display</div>
+
+<canvas id="geometryCanvas" width="600" height="400" style="border:1px solid #444;"></canvas>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const svg = document.getElementById("animated-svg");
+        const rect = document.getElementById("svg-rect");
+        const stop1 = document.getElementById("stop1");
+        const stop2 = document.getElementById("stop2");
+
+        let hue = 0;
+        setInterval(() => {
+            hue = (hue + 1) % 360;
+            const color1 = `hsl(${hue}, 100%, 60%)`;
+            const color2 = `hsl(${(hue + 120) % 360}, 100%, 60%)`;
+            stop1.setAttribute("stop-color", color1);
+            stop2.setAttribute("stop-color", color2);
+        }, 50);
+
+        document.addEventListener("mousemove", (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 20;
+            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            svg.style.transform = `rotateX(${y}deg) rotateY(${x}deg) scale(1.05)`;
+        });
+
+        document.addEventListener("mouseleave", () => {
+            svg.style.transform = "rotateX(0deg) rotateY(0deg)";
+        });
+    });
+</script>
 
 @* <BlazoredToast ToastId="Toast2" Position="ToastPosition.BottomRight" /> *@
 
 @code {
-    [Inject] private IJSRuntime JsRuntime { get; set; } = default!;
-    [Inject] private IToastService ToastService { get; set; } = default!;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!firstRender) return;
-
-        try
-        {
-            var module = await JsRuntime.InvokeAsync<IJSObjectReference>(
-                "import",
-                "./js/layoutCanvas.js"
-            );
-
-            await module.InvokeVoidAsync("startBackgroundCanvas");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"❌ JS error in MainLayout: {ex.Message}");
-        }
-        if (firstRender)
-        {
-            try
-            {
-                var module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/layoutCanvas.js");
-                await module.InvokeVoidAsync("startBackgroundCanvas");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ JS error in MainLayout: {ex.Message}");
-            }
-        }
-    }
-    private void ShowTestToast()
-    {
-        ToastService.ShowSuccess("It works!"/* , "Success" */);
-    }
 }
 
 
