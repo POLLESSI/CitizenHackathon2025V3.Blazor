@@ -5,6 +5,8 @@
 
 self.addEventListener("install", () => {
     console.log("✅ Service worker installed (dev mode)");
+    // Immediate activation
+    self.skipWaiting();
 });
 
 self.addEventListener("activate", event => {
@@ -14,7 +16,5 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
     // Skip caching: Always fetch from network
-    return;
+    event.respondWith(fetch(event.request));
 });
-// Disabled to avoid dev caching
-self.addEventListener('fetch', () => { });

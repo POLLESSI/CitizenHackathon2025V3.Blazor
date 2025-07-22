@@ -18,6 +18,9 @@
 
 		<!-- Force copy of service worker related files -->
 		<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+		<StaticWebAssetBasePath>_content</StaticWebAssetBasePath>
+		<BlazorWebAssemblyEnableLinking>true</BlazorWebAssemblyEnableLinking>
+		<AspNetCoreHostingModel>Static</AspNetCoreHostingModel>
 	</PropertyGroup>
 
 	<Target Name="CleanBeforeBuild" BeforeTargets="Build">
@@ -32,15 +35,6 @@
 		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.7" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<!--<Content Include="wwwroot\manifest.json" CopyToOutputDirectory="PreserveNewest" />-->
-		<!--<Content Update="wwwroot\js\**\*.js" CopyToOutputDirectory="PreserveNewest" />-->
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Shared\" />
 	</ItemGroup>
 
 </Project>

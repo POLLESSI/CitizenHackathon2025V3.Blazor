@@ -6,7 +6,7 @@ namespace CitizenHackathon2025V3.Blazor.Client.DTOs
 {
     public class TrafficEventDTO
     {
-#nullable disable
+    #nullable disable
         
         public string Id { get; set; } = default!;
         [DisplayName("Type")]
