@@ -1,4 +1,5 @@
 ﻿using Blazored.Toast.Services;
+using CitizenHackathon2025V3.Blazor.Client.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -8,6 +9,7 @@ namespace CitizenHackathon2025V3.Blazor.Client
     {
         [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
         [Inject] private IToastService ToastService { get; set; } = default!;
+        [Inject] private OutZenSignalRService SignalRService { get; set; } = default!;
 
         private string GetBackgroundImage()
         {
@@ -20,6 +22,11 @@ namespace CitizenHackathon2025V3.Blazor.Client
                 < 20 => "/images/sunset.jpg",
                 _ => "/images/night.jpg"
             };
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            await SignalRService.StartAsync();
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)

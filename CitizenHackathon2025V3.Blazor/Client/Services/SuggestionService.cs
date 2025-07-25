@@ -1,5 +1,8 @@
-﻿using System.Net.Http.Json;
+﻿using CitizenHackathon2025V3.Blazor.Client.DTOs;
 using CitizenHackathon2025V3.Blazor.Client.Models;
+using CitizenHackathon2025V3.Blazor.Client.Shared.Suggestion;
+using System.Net.Http.Json;
+using static System.Net.WebRequestMethods;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Services
 {
@@ -20,6 +23,11 @@ namespace CitizenHackathon2025V3.Blazor.Client.Services
                 return await response.Content.ReadFromJsonAsync<IEnumerable<SuggestionModel>>();
             }
             return Enumerable.Empty<SuggestionModel>();
+        }
+        public async Task<List<SuggestionDTO>> GetSuggestionsNearbyAsync(double lat, double lng)
+        {
+            return await _httpClient.GetFromJsonAsync<List<SuggestionDTO>>($"/api/suggestions?lat={lat}&lng={lng}")
+                   ?? new List<SuggestionDTO>();
         }
         public async Task<bool> SoftDeleteSuggestionAsync(int id)
         {

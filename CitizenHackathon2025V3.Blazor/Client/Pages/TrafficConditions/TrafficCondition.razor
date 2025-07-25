@@ -2,7 +2,9 @@
 @inherits SignalRComponentBase<TrafficConditionModel>
 @using CitizenHackathon2025V3.Blazor.Client.Common.SignalR
 @using CitizenHackathon2025V3.Blazor.Client.Models
+@using CitizenHackathon2025V3.Blazor.Client.Shared.Suggestion
 @inject IJSRuntime JS
+@inject OutZenSignalRService SignalRService
 
 <h3>Traffic condition Information</h3>
 
@@ -37,8 +39,16 @@ else
         </table>
     </div>
 }
+@if (Suggestions?.Any() == true)
+{
+    <p>@Suggestions.Count() suggestions à proximité</p>
+    <button class="btn btn-primary" @onclick="ShowOnMap">Voir sur carte</button>
+}
 
 @code {
+
+    [Parameter] public IEnumerable<SuggestionDTO> Suggestions { get; set; } = [];
+
     private List<TrafficConditionModel> visibleTrafficConditionInfos = new();
     private int batchSize = 10;
     private int currentIndex = 0;
@@ -60,6 +70,11 @@ else
         StateHasChanged();
     }
 
+    private void HandleCrowdUpdate(CrowdInfoUIDTO data)
+    {
+        Console.WriteLine($"🧠 Received Crowd Info: {data.CrowdLevel}");
+    }
+
     private async Task HandleScroll()
     {
         var scrollTop = await JS.InvokeAsync<int>("getScrollTop", ScrollContainerRef);
@@ -77,6 +92,16 @@ else
         visibleTrafficConditionInfos.Insert(0, model);
         StateHasChanged();
         return Task.CompletedTask;
+    }
+
+    private async Task ShowOnMap()
+    {
+        await JS.InvokeVoidAsync("showSuggestionsOnMap", Suggestions);
+    }
+
+    public void Dispose()
+    {
+        SignalRService.OnCrowdInfoUpdated -= HandleCrowdUpdate;
     }
 }
 

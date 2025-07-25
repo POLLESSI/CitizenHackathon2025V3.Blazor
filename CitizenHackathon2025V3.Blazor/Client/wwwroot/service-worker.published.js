@@ -94,3 +94,91 @@
 //        })
 //    );
 //});
+//self.addEventListener('install', event => {
+//    event.waitUntil(
+//        caches.open("outzen-cache-v1").then(cache =>
+//            cache.addAll([
+//                '/',
+//                'index.html',
+//                'offline.html',
+//                'manifest.webmanifest',
+//                'icons/icon-192.png',
+//                'icons/icon-512.png'
+//            ])
+//        )
+//    );
+//    self.skipWaiting();
+//});
+
+//self.addEventListener('fetch', event => {
+//    event.respondWith(
+//        fetch(event.request).catch(() => caches.match(event.request).then(response => response || caches.match('offline.html')))
+//    );
+//});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*// Copyrigtht (c) 2025 Citizen Hackathon https://github.com/POLLESSI/Citizenhackathon2025V3.Blazor.Client. All rights reserved.*/

@@ -1,8 +1,11 @@
 ﻿@page "/crowdinfo"
 @using CitizenHackathon2025V3.Blazor.Client.Common.SignalR
 @using CitizenHackathon2025V3.Blazor.Client.Models
+@using CitizenHackathon2025V3.Blazor.Client.Shared.Suggestion
 @inherits SignalRComponentBase<CrowdInfoModel>
 @inject IJSRuntime JS
+@inject OutZenSignalRService SignalRService
+@implements IDisposable
 
 <h3>Crowd Information</h3>
 
@@ -36,13 +39,28 @@ else
             </tbody>
         </table>
     </div>
+    <ul>
+        @foreach (var info in crowdInfos)
+        {
+            <li>@info.PlaceName - @info.CrowdLevel - @info.Icon</li>
+        }
+    </ul>
+}
+@if (Suggestions?.Any() == true)
+{
+    <p>@Suggestions.Count() suggestions à proximité</p>
+    <button class="btn btn-primary" @onclick="ShowOnMap">Voir sur carte</button>
 }
 
 @code {
+
+    [Parameter] public IEnumerable<SuggestionDTO> Suggestions { get; set; } = [];
+
     private List<CrowdInfoModel> visibleCrowdInfos = new();
     private int batchSize = 10;
     private int currentIndex = 0;
     private ElementReference ScrollContainerRef;
+    private List<CrowdInfoUIDTO> crowdInfos = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -51,6 +69,29 @@ else
             LoadMoreItems();
         }
     }
+
+    protected override void OnInitialized()
+    {
+        SignalRService.OnCrowdInfoUpdated += AddCrowdInfo;
+    }
+
+    private void AddCrowdInfo(CrowdInfoUIDTO dto)
+    {
+        crowdInfos.Insert(0, dto);
+        StateHasChanged();
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        SignalRService.OnCrowdInfoUpdated += HandleCrowdUpdate;
+        await SignalRService.StartAsync();
+    }
+
+    private void HandleCrowdUpdate(CrowdInfoUIDTO data)
+    {
+        Console.WriteLine($"🧠 Received Crowd Info: {data.PlaceName}");
+    }
+
+
 
     private void LoadMoreItems()
     {
@@ -77,6 +118,17 @@ else
         visibleCrowdInfos.Insert(0, model);
         StateHasChanged();
         return Task.CompletedTask;
+    }
+
+    private async Task ShowOnMap()
+    {
+        await JS.InvokeVoidAsync("showSuggestionsOnMap", Suggestions);
+    }
+
+    public void Dispose()
+    {
+        SignalRService.OnCrowdInfoUpdated -= AddCrowdInfo;
+        SignalRService.OnCrowdInfoUpdated -= HandleCrowdUpdate;
     }
 }
 

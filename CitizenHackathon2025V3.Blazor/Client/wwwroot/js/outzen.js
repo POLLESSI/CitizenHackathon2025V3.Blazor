@@ -74,6 +74,11 @@ window.getWazeTrafficInfo = async () => {
         document.body.classList.toggle("dark-mode");
     };
 
+window.outzenLog = {
+    info: (msg) => console.log("ℹ️ OutZen:", msg),
+    warn: (msg) => console.warn("⚠️ OutZen:", msg),
+    error: (msg) => console.error("❌ OutZen:", msg)
+};
 
 
 

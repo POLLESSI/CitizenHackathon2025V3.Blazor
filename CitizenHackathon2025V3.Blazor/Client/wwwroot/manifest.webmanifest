@@ -3,20 +3,20 @@
   "short_name": "OutZen",
   "start_url": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#4a90e2",
-  "orientation": "portrait",
   "scope": "/",
   "lang": "fr-BE",
   "description": "OutZen - Application for visualizing and forecasting traffic, crowds and weather in real time, allowing suggestions of suitable and fun alternatives",
   "icons": [
     {
-        "src": "/icons/icon-192.png",
+      "src": "/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-        "src": "/icons/icon-512.png",
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

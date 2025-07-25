@@ -10,6 +10,7 @@ using System.Net.Http;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
+//builder.HostEnvironment.BaseAddress = "https://<ton-user>.github.io/outzen/";
 
 builder.Services.AddScoped(sp => new HttpClient
 {
@@ -21,6 +22,7 @@ builder.Services.AddScoped<GptInteractionService>();
 builder.Services.AddScoped<PlaceService>();
 builder.Services.AddScoped<SuggestionService>();
 builder.Services.AddScoped<TrafficConditionService>();
+builder.Services.AddScoped<OutZenSignalRService>();
 builder.Services.AddSingleton<TrafficServiceBlazor>();
 builder.Services.AddSingleton<TrafficSignalRService>();
 builder.Services.AddScoped<UserService>();
