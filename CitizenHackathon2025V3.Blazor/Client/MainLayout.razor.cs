@@ -10,6 +10,7 @@ namespace CitizenHackathon2025V3.Blazor.Client
         [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
         [Inject] private IToastService ToastService { get; set; } = default!;
         [Inject] private OutZenSignalRService SignalRService { get; set; } = default!;
+        
 
         private string GetBackgroundImage()
         {
@@ -42,17 +43,23 @@ namespace CitizenHackathon2025V3.Blazor.Client
 
                 await module.InvokeVoidAsync("startBackgroundCanvas");
 
-                // Appels initiaux JS après le rendu
+                // Initial JS calls after rendering
                 await JSRuntime.InvokeVoidAsync("GeometryCanvas.init");
                 await JSRuntime.InvokeVoidAsync("initializeLeafletMap");
                 await JSRuntime.InvokeVoidAsync("initScrollAnimations");
                 await JSRuntime.InvokeVoidAsync("signalrInterop.startConnection", "/crowdHub");
-                await Task.Delay(100); // Laisse du temps à la connection
+                await Task.Delay(100); // Allow time for the connection
                 await JSRuntime.InvokeVoidAsync("initParallax");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ JS error in MainLayout: {ex.Message}");
+            }
+
+            if (!_initialized)
+            {
+                _initialized = true;
+                await OutZenService.StartAsync();
             }
         }
 

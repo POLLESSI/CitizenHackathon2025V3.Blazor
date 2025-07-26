@@ -1,15 +1,15 @@
 {
   "mainAssemblyName": "CitizenHackathon2025V3.Blazor.Client",
   "resources": {
-    "hash": "sha256-MRSxej+y366QQpK/QrY5CTXWnAc7Lqq0blUjJzS1Tys=",
+    "hash": "sha256-Zglfzc783UlkeTmnJkg7ronrPHGBAwzabJjiF0TouNY=",
     "jsModuleNative": {
-      "dotnet.native.8.0.17.hbkocuve54.js": "sha256-cLjLOzm6jz0acrhP4ZLslbrbELSrgisrlylruF6fwjo="
+      "dotnet.native.8.0.18.hbkocuve54.js": "sha256-KiWDh5aRDqg1lsO9i4tOqw+lSFUYiIdNmxceomURpd8="
     },
     "jsModuleRuntime": {
-      "dotnet.runtime.8.0.17.1mvquaiy0n.js": "sha256-nlm9ZX+9Z8SHWuCfVhHT5pkK9QzTgBn3opfL6mMas20="
+      "dotnet.runtime.8.0.18.yo367l2cfr.js": "sha256-QVLJL2PFoMyGwMOZIRShe4/0TJQfK2WMqoIYdVaI+yM="
     },
     "wasmNative": {
-      "dotnet.native.wasm": "sha256-fQr4FEtm+eYRfOLOh5G04yDrUfJVo3nbLlq0NcY7yUI="
+      "dotnet.native.wasm": "sha256-9jFW+7G+rJQ0Bl0qspmfhFWdckyhVwBRof7sl7uIJmc="
     },
     "icu": {
       "icudt_CJK.dat": "sha256-SZLtQnRc0JkwqHab0VUVP7T3uBPSeYzxzDnpxPpUnHk=",
@@ -222,10 +222,10 @@
       "mscorlib.wasm": "sha256-flmBXVpp8uDpWBNEJuRkqo3Qnir1KADo5a1rCQISkPs=",
       "netstandard.wasm": "sha256-iuCVrIBmiGbXpNVvYkBmSt16BNEjbbD82vYrtHimftc=",
       "System.Private.CoreLib.wasm": "sha256-1Xa/xaUoA/iRxpDqZPUUzL8QaTawkoJLhGmxtRv9ZJI=",
-      "CitizenHackathon2025V3.Blazor.Client.wasm": "sha256-tNJG49Krh+W6ILCjxF5LaHcnnMkGHJ1yQ//Wlj7ZdRU="
+      "CitizenHackathon2025V3.Blazor.Client.wasm": "sha256-xVfVO3V2DDNBrvWYFHOJ6qBl7De6kauBekCKipCaebE="
     },
     "pdb": {
-      "CitizenHackathon2025V3.Blazor.Client.pdb": "sha256-cqtt6er+RsRe6RKriS8GqS/7el0IS1DS/Bl3d9ac3VQ="
+      "CitizenHackathon2025V3.Blazor.Client.pdb": "sha256-5rgV8gvBHa2T0oz+NpA0+55k0W4VdegzeQWmLu3D+6k="
     }
   },
   "cacheBootResources": true,

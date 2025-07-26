@@ -2,7 +2,7 @@
 @using CitizenHackathon2025V3.Blazor.Client.DTOs.Security
 @inject HttpClient Http
 
-<h3>🛡️ Violations CSP détectées</h3>
+<h3>🛡️ CSP violations detected</h3>
 
 @if (reports == null)
 {
@@ -10,19 +10,19 @@
 }
 else if (!reports.Any())
 {
-    <p>Aucune violation CSP détectée pour le moment.</p>
+    <p>No CSP violations detected yet.</p>
 }
 else
 {
-    <button class="btn btn-sm btn-danger mb-2" @onclick="ClearReports">🧹 Vider les logs</button>
+    <button class="btn btn-sm btn-danger mb-2" @onclick="ClearReports">🧹 Clear the logs</button>
     <table class="table table-sm table-striped">
         <thead class="table-dark">
             <tr>
                 <th>Directive</th>
-                <th>URI bloquée</th>
+                <th>URI blocked</th>
                 <th>Source</th>
-                <th>Fichier</th>
-                <th>Ligne</th>
+                <th>File</th>
+                <th>Line</th>
             </tr>
         </thead>
         <tbody>

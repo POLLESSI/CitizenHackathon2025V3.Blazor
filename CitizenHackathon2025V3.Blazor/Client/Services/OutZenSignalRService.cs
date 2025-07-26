@@ -1,96 +1,168 @@
-﻿using CitizenHackathon2025V3.Blazor.Client.DTOs;
+﻿using Blazored.Toast.Services;
+using CitizenHackathon2025V3.Blazor.Client.DTOs;
 using CitizenHackathon2025V3.Blazor.Client.Shared.TrafficCondition;
 using CitizenHackathon2025V3.Blazor.Client.Shared.WeatherForecast;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
-using Blazored.Toast.Services;
 using Microsoft.JSInterop;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Services
 {
-    public class OutZenSignalRService
+    public class OutZenSignalRService : IAsyncDisposable
     {
         private readonly HubConnection _connection;
         private readonly IToastService _toast;
-        private readonly IJSRuntime _jsRuntime;
+        private readonly IJSRuntime _js;
+        private readonly SemaphoreSlim _connectionLock = new(1, 1);
+        private readonly CancellationTokenSource _cts = new();
+
+        public bool IsConnected => _connection.State == HubConnectionState.Connected;
 
         public event Action<CrowdInfoUIDTO>? OnCrowdInfoUpdated;
         public event Action<WeatherForecastDTO>? OnWeatherUpdated;
         public event Action<TrafficConditionDTO>? OnTrafficUpdated;
+        public event Action<HubConnectionState>? OnConnectionChanged;
 
-        public bool IsConnected => _connection.State == HubConnectionState.Connected;
-
-        public OutZenSignalRService(NavigationManager navManager, IToastService toast, IJSRuntime jsRuntime)
+        public OutZenSignalRService(NavigationManager navManager, IToastService toast, IJSRuntime js)
         {
             _toast = toast;
-            _jsRuntime = jsRuntime;
+            _js = js;
 
             _connection = new HubConnectionBuilder()
                 .WithUrl(navManager.ToAbsoluteUri("/hub/outzen"))
                 .WithAutomaticReconnect()
                 .Build();
 
-            _connection.On<CrowdInfoUIDTO>("CrowdInfoUpdated", data => OnCrowdInfoUpdated?.Invoke(data));
-            _connection.On<WeatherForecastDTO>("WeatherUpdated", data => OnWeatherUpdated?.Invoke(data));
-            _connection.On<TrafficConditionDTO>("TrafficUpdated", data => OnTrafficUpdated?.Invoke(data));
+            RegisterHandlers();
+        }
+
+        private void RegisterHandlers()
+        {
+            _connection.On<CrowdInfoUIDTO>("CrowdInfoUpdated", dto => OnCrowdInfoUpdated?.Invoke(dto));
+            _connection.On<WeatherForecastDTO>("WeatherUpdated", dto => OnWeatherUpdated?.Invoke(dto));
+            _connection.On<TrafficConditionDTO>("TrafficUpdated", dto => OnTrafficUpdated?.Invoke(dto));
 
             _connection.Reconnecting += async (ex) =>
             {
-                await _jsRuntime.InvokeVoidAsync("console.warn", "🔄 Reconnecting to SignalR...");
-                _toast.ShowWarning("Reconnexion en cours à OutZen...");
+                await LogAndToastAsync("🔄 Reconnecting to OutZen...", LogLevel.Warning);
+                OnConnectionChanged?.Invoke(HubConnectionState.Reconnecting);
             };
 
             _connection.Reconnected += async (connectionId) =>
             {
-                await _jsRuntime.InvokeVoidAsync("console.info", "✅ Reconnected to SignalR.");
-                _toast.ShowSuccess("Reconnexion réussie à OutZen");
+                await LogAndToastAsync("✅ Successfully reconnected to OutZen", LogLevel.Success);
+                OnConnectionChanged?.Invoke(HubConnectionState.Connected);
             };
 
             _connection.Closed += async (ex) =>
             {
-                await _jsRuntime.InvokeVoidAsync("console.error", "❌ SignalR connection closed.");
-                _toast.ShowError("Connexion à OutZen perdue.");
-                // Optional: Wait before attempting to reconnect
-                await Task.Delay(3000);
-                await TryStartAsync();
+                await LogAndToastAsync("❌ Lost OutZen connection", LogLevel.Error);
+                OnConnectionChanged?.Invoke(HubConnectionState.Disconnected);
+
+                try
+                {
+                    await Task.Delay(5000, _cts.Token);
+                    await TryStartAsync();
+                }
+                catch (OperationCanceledException) { /* Ignored */ }
             };
         }
 
         public async Task StartAsync()
         {
+            await _connectionLock.WaitAsync();
             try
             {
                 if (_connection.State == HubConnectionState.Disconnected)
                 {
-                    await _connection.StartAsync();
-                    _toast.ShowSuccess("Connecté à OutZen (temps réel)");
-                    await _jsRuntime.InvokeVoidAsync("console.log", "📡 SignalR started");
+                    await _connection.StartAsync(_cts.Token);
+                    await LogAndToastAsync("📡 Connected to OutZen (real time)", LogLevel.Success);
+                    OnConnectionChanged?.Invoke(HubConnectionState.Connected);
                 }
             }
             catch (Exception ex)
             {
-                _toast.ShowError("Erreur lors de la connexion à OutZen");
-                await _jsRuntime.InvokeVoidAsync("console.error", "SignalR failed to start", ex.Message);
+                await LogAndToastAsync($"❌ OutZen connection error : {ex.Message}", LogLevel.Error);
+            }
+            finally
+            {
+                _connectionLock.Release();
             }
         }
 
         public async Task TryStartAsync()
         {
-            if (_connection.State == HubConnectionState.Disconnected)
+            if (_connection.State != HubConnectionState.Disconnected) return;
+
+            await _connectionLock.WaitAsync();
+            try
             {
-                try
-                {
-                    await _connection.StartAsync();
-                    _toast.ShowSuccess("Successfully reconnected to OutZen");
-                }
-                catch
-                {
-                    _toast.ShowWarning("Unable to reconnect to OutZen");
-                }
+                await _connection.StartAsync(_cts.Token);
+                await LogAndToastAsync("🔁 Reconnected to OutZen", LogLevel.Success);
+                OnConnectionChanged?.Invoke(HubConnectionState.Connected);
+            }
+            catch
+            {
+                await LogAndToastAsync("⚠️ Unable to reconnect to OutZen", LogLevel.Warning);
+            }
+            finally
+            {
+                _connectionLock.Release();
             }
         }
+
+        public async Task StopAsync()
+        {
+            try
+            {
+                _cts.Cancel();
+                await _connection.StopAsync();
+                await LogAndToastAsync("⛔ Disconnected from OutZen", LogLevel.Info);
+                OnConnectionChanged?.Invoke(HubConnectionState.Disconnected);
+            }
+            catch (Exception ex)
+            {
+                await LogAndToastAsync($"🚫 Disconnect error : {ex.Message}", LogLevel.Error);
+            }
+        }
+
+        private async Task LogAndToastAsync(string message, LogLevel level)
+        {
+            switch (level)
+            {
+                case LogLevel.Success: _toast.ShowSuccess(message); break;
+                case LogLevel.Warning: _toast.ShowWarning(message); break;
+                case LogLevel.Error: _toast.ShowError(message); break;
+                default: _toast.ShowInfo(message); break;
+            }
+
+            string logMethod = level switch
+            {
+                LogLevel.Error => "console.error",
+                LogLevel.Warning => "console.warn",
+                LogLevel.Success => "console.info",
+                _ => "console.log"
+            };
+
+            await _js.InvokeVoidAsync(logMethod, $"[OutZen] {message}");
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            _cts.Cancel();
+            await _connection.DisposeAsync();
+            _connectionLock.Dispose();
+            _cts.Dispose();
+        }
+
+        private enum LogLevel { Info, Success, Warning, Error }
     }
 }
+
+
 
 
 

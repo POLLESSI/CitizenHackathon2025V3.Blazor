@@ -2,6 +2,7 @@
 @using Blazored.Toast
 @using Blazored.Toast.Configuration
 @using Blazored.Toast.Services
+@inject OutZenSignalRService OutZenService
 
 <button class="btn btn-primary" @onclick="ShowTestToast">
     Test the toast
@@ -39,8 +40,8 @@
     </main>
 </div>
 
-<!-- Les SVG décoratifs -->
-<div class="svg-background">
+<!-- Decorative SVGs -->
+@* <div class="svg-background">
     <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
         <defs>
             <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -107,11 +108,12 @@
             svg.style.transform = "rotateX(0deg) rotateY(0deg)";
         });
     });
-</script>
+</script> *@
 
 @* <BlazoredToast ToastId="Toast2" Position="ToastPosition.BottomRight" /> *@
 
 @code {
+    private bool _initialized = false;
 }
 
 
