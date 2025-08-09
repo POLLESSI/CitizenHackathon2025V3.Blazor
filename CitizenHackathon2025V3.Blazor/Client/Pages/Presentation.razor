@@ -6,6 +6,10 @@
     Test the toast
 </button> *@
 
+<button class="btn btn-success" @onclick="TestSignalR">
+    🧪 Tester la réception SignalR
+</button>
+
 <PageTitle>Presentation - OutZen</PageTitle>
 
 <div class="presentation-container">
@@ -67,6 +71,13 @@
         <button class="cta-button" @onclick="NavigateHome">Back to home</button>
     </section>
 </div>
+<select @onchange="ChangeTheme">
+    <option value="theme-ultraluxe">Ultra Luxe</option>
+</select>
+
+<div id="map"></div>
+
+<MapSimulator />
 
 @code {
 #nullable disable
@@ -82,14 +93,51 @@
     private string LevelColor =>
         CrowdLevel < 30 ? "green" :
         CrowdLevel < 70 ? "orange" : "red";
+    private async Task ChangeTheme(ChangeEventArgs e)
+    {
+        await JS.InvokeVoidAsync("setTheme", e.Value?.ToString());
+    }
+    private async Task TestSignalR()
+    {
+        var fakeData = new
+        {
+            latitude = 50.895,
+            longitude = 4.3415,
+            level = 2,
+            description = "⚠️ Cork simulation",
+            timestamp = DateTime.Now
+        };
 
+        await JS.InvokeVoidAsync("trafficInterop.updateTrafficMarkers", new[] { fakeData });
+    }
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if (!firstRender) return;
+           
+    //     try
+    //     {
+    //         await JS.InvokeVoidAsync("initializeLeafletMap");
+    //         await JS.InvokeVoidAsync("initScrollAnimations");
+    //         await JS.InvokeVoidAsync("startOutzenConnection");
+    //     }
+           // catch (Exception ex)
+           //  {
+           //      Console.WriteLine("Erreur JS interop : " + ex.Message);
+           //  }
+    // }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await JS.InvokeVoidAsync("initializeLeafletMap");
-            await JS.InvokeVoidAsync("initScrollAnimations");
+            Console.WriteLine("Presentation.razor: JS initialisation via init.js");
+            await JS.InvokeVoidAsync("import", "./js/init.js");
+            await JS.InvokeVoidAsync("outzen.init");
         }
+    }
+    [JSInvokable]
+    public async Task OnCrowdInfoReceived(string dataJson)
+    {
+        // Deserializes and processes received SignalR data
     }
 }
 

@@ -12,16 +12,17 @@
     <ul class="nav-links @(collapseNavMenu ? "collapsed" : "")">
         @if (IsHomePage)
         {
-            <li><NavLink href="/" @onclick="CloseMenu">🏠 Accueil</NavLink></li>
-            <li><NavLink href="/presentation">🛡 Presentation</NavLink></li>
-            <li><NavLink href="/crowdinfo">✨ CrowdInfos</NavLink></li>
-            <li><NavLink href="/event">📅 Events</NavLink></li>
-            <li><NavLink href="/gptinteraction">🤖 GPT Interactions</NavLink></li>
-            <li><NavLink href="/place">📍 Places</NavLink></li>
-            <li><NavLink href="/suggestion">💡 Suggestions</NavLink></li>
-            <li><NavLink href="/trafficcondition">🚦 Traffic</NavLink></li>
-            <li><NavLink href="/user">👤 Users</NavLink></li>
-            <li><NavLink href="/weatherforecast">🌤 Weather</NavLink></li>
+            <li><NavLink href="/" @onclick="CloseMenu" class="nav-link" ActiveClass="active">🏠 Accueil</NavLink></li>
+            <li><NavLink href="/presentation" class="nav-link" ActiveClass="active">🛡 Presentation</NavLink></li>
+            <li><NavLink href="/crowdinfo" class="nav-link" ActiveClass="active">✨ CrowdInfos</NavLink></li>
+            <li><NavLink href="/event" @onclick="CloseMenu" class="nav-link" ActiveClass="active">📅 Events</NavLink></li>
+            <li><NavLink href="/gptinteraction" @onclick="CloseMenu" class="nav-link" ActiveClass="active">🤖 GPT Interactions</NavLink></li>
+            <li><NavLink href="/place" @onclick="CloseMenu" class="nav-link" ActiveClass="active">📍 Places</NavLink></li>
+            <li><NavLink href="/suggestion" class="nav-link" ActiveClass="active">💡 Suggestions</NavLink></li>
+            <li><NavLink href="/trafficcondition" class="nav-link" ActiveClass="active">🚦 Traffic</NavLink></li>
+            <li><NavLink href="/user" @onclick="CloseMenu" class="nav-link" ActiveClass="active">👤 Users</NavLink></li>
+            <li><NavLink href="/weatherforecast" class="nav-link" ActiveClass="active">🌤 Weather</NavLink></li>
+
             <li><NavLink href="/privacy">🔐 Privacy</NavLink></li>
         }
         else
@@ -30,19 +31,28 @@
         }
     </ul>
 </nav>
-<NavLink class="nav-link" href="csp-dashboard">
+@* <NavLink class="nav-link" href="csp-dashboard">
     <span class="oi oi-lock-locked" aria-hidden="true"></span> CSP Dashboard
-</NavLink>
+</NavLink> *@
 
 @code {
     private bool collapseNavMenu = true;
-    private bool IsHomePage => NavManager.Uri.EndsWith("/");
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu() => collapseNavMenu = !collapseNavMenu;
-    private void CloseMenu() => collapseNavMenu = true;
+
+    private record MenuItem(string Text, string Href, string Icon, NavLinkMatch Match);
+
+    private bool IsMenuOpen;
+    private bool IsHomePage => NavManager.Uri.EndsWith("/");
 
     protected override void OnInitialized() =>
         NavManager.LocationChanged += (_, _) => StateHasChanged();
+    
+    private void CloseMenu() => collapseNavMenu = true;
+
+    
 }
 
 

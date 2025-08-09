@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Json;
 using CitizenHackathon2025V3.Blazor.Client.Models;
+using CitizenHackathon2025V3.Blazor.Client.Utils;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Services
 {
@@ -29,6 +30,12 @@ namespace CitizenHackathon2025V3.Blazor.Client.Services
                 return await response.Content.ReadFromJsonAsync<IEnumerable<CrowdInfoModel>>();
             }
             return Enumerable.Empty<CrowdInfoModel>();
+        }
+
+        public async Task<List<CrowdInfoModel>> GetLatestCrowdInfoNonNullAsync()
+        {
+            var raw = await GetAllCrowdInfoAsync();
+            return raw.ToNonNullList();
         }
         public async Task<CrowdInfoModel?> GetCrowdInfoByIdAsync(int id)
         {

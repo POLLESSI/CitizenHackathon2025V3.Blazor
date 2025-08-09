@@ -8,7 +8,7 @@ namespace CitizenHackathon2025V3.Blazor.Client.Services
 {
     public class SuggestionService
     {
-#nullable disable
+    #nullable disable
         private readonly HttpClient _httpClient;
 
         public SuggestionService(HttpClient httpClient)

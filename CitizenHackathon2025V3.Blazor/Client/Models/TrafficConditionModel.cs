@@ -8,6 +8,8 @@
         public double Longitude { get; set; }
         public DateTime DateCondition { get; set; }
         public string IncidentType { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public string Level { get; set; } = string.Empty;
     }
 }
 

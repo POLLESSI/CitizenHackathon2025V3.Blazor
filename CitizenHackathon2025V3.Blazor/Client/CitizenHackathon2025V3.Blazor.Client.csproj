@@ -6,44 +6,29 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<OutputType>Exe</OutputType>
 		<SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
-
-		<!-- AOT (Ahead-Of-Time) compilation enabled for Release only -->
 		<RunAOTCompilation Condition="'$(Configuration)' == 'Release'">true</RunAOTCompilation>
-
-		<!-- Disable time zone support to reduce size -->
-		<BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
-
-		<!-- Trim to remove unused code -->
 		<PublishTrimmed>true</PublishTrimmed>
-
-		<!-- Scoped CSS support -->
 		<EnableDefaultScopedCssItems>true</EnableDefaultScopedCssItems>
-
-		<!-- No service worker in dev -->
-		<!-- <ServiceWorkerAssetsManifest></ServiceWorkerAssetsManifest> -->
-
-		<!-- Custom directory for assets -->
-		<OutputPath>dist\</OutputPath>
 		<StaticWebAssetBasePath>outzen</StaticWebAssetBasePath>
-		<BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
-		<AspNetCoreHostingModel>Static</AspNetCoreHostingModel>
+		<OutputPath>dist\</OutputPath>
 	</PropertyGroup>
-
-	<!-- Clean only in Release to avoid dev build issues -->
-	<Target Name="CleanBeforeBuild" BeforeTargets="Build" Condition="'$(Configuration)' == 'Release'">
-		<RemoveDir Directories="$(BaseIntermediateOutputPath)" />
-		<RemoveDir Directories="$(BaseOutputPath)" />
-	</Target>
 
 	<ItemGroup>
 		<PackageReference Include="Blazored.Toast" Version="4.2.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.7" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.7" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.19" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.19" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.19" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.19" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+		<PackageReference Include="Microsoft.JSInterop" Version="8.0.19" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
-
+	<ItemGroup>
+		<FrameworkReference Remove="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="wwwroot\js\utils\" />
+	</ItemGroup>
 </Project>
 
 <!--AOT (Ahead-Of-Time) compilation enabled for Release onlyDisable time zone support to reduce sizeTrim to remove unused codeForce copy of service worker related filesAutomatic cleaning before each build (attention: impacts build speed)Main dependenciesAutomatic copying of JS files(Optional) Copy of the web manifest if you have one-->

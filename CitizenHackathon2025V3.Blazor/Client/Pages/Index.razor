@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.SignalR.Client
 @inject NavigationManager Navigation
 @inject Blazored.Toast.Services.IToastService ToastService
+@inject IJSRuntime JS
 
 @* <button class="btn btn-primary" @onclick="() => ToastService.ShowSuccess(" It works !", "Success" )">
     Test the toast
@@ -11,171 +12,78 @@
 
 <h2>Welcome to the</h2>
 
-<div class="scroll-container">
+<div class="index-hero scroll-fade">
+    <div class="index-svg-background">
+        <!-- Animated decorative SVG -->
+        <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+            <circle cx="50" cy="50" r="40" fill="url(#gradient)" />
+            <defs>
+                <radialGradient id="gradient">
+                    <stop offset="0%" stop-color="#00fff7" />
+                    <stop offset="100%" stop-color="#7f5af0" />
+                </radialGradient>
+            </defs>
+        </svg>
+        <div class="index-noise-overlay"></div>
+    </div>
 
-    <!-- Intro -->
-    <section class="intro-section">
-        <h1>Welcome to <span class="highlight">OutZen</span></h1>
-        <p>Track real-time traffic, weather, and crowd flow, and receive smart suggestions.</p>
-    </section>
+    <h1 class="index-title">Bienvenue sur OutZen</h1>
+    <p class="index-subtitle">
+        Explorez les événements sereinement, même quand la foule s’en mêle.
+    </p>
 
-    <!-- Map -->
-    <section class="leaflet-section">
-        <h2>Interactive map</h2>
-        <div id="map" class="map-container"></div>
-    </section>
+    <button class="index-cta" @onclick="ScrollToSuggestions">
+        Découvrir les suggestions
+    </button>
 
-    <!-- Simulator + Graph -->
-    <section class="simulator-section">
-        <h2>Real-time traffic</h2>
-        <canvas id="crowdChart"></canvas>
-        <button class="cta-button" @onclick="SimulateCrowdChange">Simulate crowds</button>
-    </section>
-
-    <!-- Weather & Traffic & Suggestions -->
-    <section class="info-section">
-        <h2>Real-time information & suggestions</h2>
-        <div class="info-grid">
-            <div class="info-box">
-                <h3>Weather</h3>
-                <pre>@WeatherInfo</pre>
-            </div>
-            <div class="info-box">
-                <h3>Traffic</h3>
-                <pre>@TrafficInfo</pre>
-            </div>
-            <div class="info-box">
-                <h3>Suggestion</h3>
-                <p><strong>@SuggestionMessage</strong></p>
-            </div>
-        </div>
-    </section>
-
-</div>
-<p><strong>🚦 Info Trafic :</strong> @TrafficInfo</p>
-
-<!-- Background SVG + Animated Canvas -->
-<div class="svg-background">
-    <svg id="animated-svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
-        <defs>
-            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop id="stop1" offset="0%" stop-color="#00fff7" />
-                <stop id="stop2" offset="100%" stop-color="#ff00ff" />
-            </linearGradient>
-        </defs>
-        <rect width="800" height="600" fill="url(#gradient)">
-            <animateTransform attributeName="transform" type="rotate" from="0 400 300" to="360 400 300" dur="60s" repeatCount="indefinite" />
-        </rect>
-    </svg>
+    <div class="orbit scroll-fade">
+        <div class="index-figurine" title="Zen Orbite"></div>
+    </div>
 </div>
 
-<div class="orbit">
-    <div class="figurine"></div>
-</div>
+<section class="index-section scroll-fade" id="suggestions">
+    <h2>Suggestions Zen</h2>
+    <p>
+        Voici quelques alternatives dans un rayon de 20 km autour de l’événement sélectionné :
+    </p>
 
-<!-- Canvas must be after DOM content -->
-<canvas id="geometryCanvas" width="800" height="400" style="width:100%; max-width:800px; background: #111;"></canvas>
+    <ul>
+        <li>🌳 Parc Naturel de la Haute Sambre</li>
+        <li>🧘 Cours de yoga en plein air à Gosselies</li>
+        <li>🎭 Théâtre en plein air – La Traviata</li>
+    </ul>
+</section>
+
+<footer class="index-footer">
+    &copy; 2025 OutZen – Zen dans la foule, zen dans la vie.
+</footer>
 
 @code {
-    private HubConnection hubConnection;
-    private string WeatherInfo = "Loading weather...";
-    private string TrafficInfo = "Loading traffic...";
-    private string SuggestionMessage = "Waiting for data...";
-    private readonly List<int> crowdData = new();
-    private readonly List<string> timeLabels = new();
-    private IJSObjectReference? module;
-    private IJSObjectReference? canvasModule;
+    private List<TrafficConditionModel> TrafficConditionsList = new();
+    [Inject] public TrafficConditionService TrafficService { get; set; }
+
+    private async Task ScrollToSuggestions()
+    {
+        await JS.InvokeVoidAsync("document.getElementById('suggestions').scrollIntoView", new { behavior = "smooth" });
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var rawTraffic = await TrafficService.GetLatestTrafficConditionAsync();
+        TrafficConditionsList = rawTraffic
+            .Where(t => t is not null)
+            .Select(t => t!)
+            .ToList();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!firstRender) return;
-
-        try
+        if (firstRender)
         {
-            // JS & DOM loading
-            await JS.InvokeVoidAsync("initializeLeafletMap");
-            await JS.InvokeVoidAsync("initializeMap", "map");
-
-            var module = await JS.InvokeAsync<IJSObjectReference>(
-                "import",
-                "./js/crowdChart.js",
-                "./js/layoutCanvas.js"
-            );
-            await module.InvokeVoidAsync(
-                "initCrowdChart",
-                "startBackgroundCanvas"
-            );
-
-            canvasModule = await JS.InvokeAsync<IJSObjectReference>("import", "./js/geometryCanvas.js");
-            await canvasModule.InvokeVoidAsync("initGeometryCanvas");
-
-            // Weather/traffic initialization
-            WeatherInfo = await JS.InvokeAsync<string>("getOpenWeatherInfo");
-            TrafficInfo = await JS.InvokeAsync<string>("getWazeTrafficInfo");
-
-            // Animated canvas
-            await JS.InvokeVoidAsync("GeometryCanvas.init");
-
-            // SignalR interop (client JS)
-            await JS.InvokeVoidAsync("signalrInterop.startConnection", "/crowdHub");
-
-            // Hub .NET → listener C#
-            hubConnection = new HubConnectionBuilder()
-                .WithUrl(Navigation.ToAbsoluteUri("/hubs/eventHub"))
-                .WithAutomaticReconnect()
-                .Build();
-
-            hubConnection.On<string>("UpdateCrowdLevel", HandleCrowdUpdate);
-            await hubConnection.StartAsync();
-
-            ComputeSuggestion();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"❌ JS or SignalR error: {ex.Message}");
-            Console.WriteLine($"❌ JS error in MainLayout: {ex.Message}");
+            await JS.InvokeVoidAsync("initScrollFade");
+            await JS.InvokeVoidAsync("trafficInterop.updateTrafficMarkers", TrafficConditionsList);
         }
     }
-
-    private async Task HandleCrowdUpdate(string levelStr)
-    {
-        await JS.InvokeVoidAsync("updateCrowdChart", levelStr);
-        crowdData.Add(int.TryParse(levelStr, out int val) ? val : 0);
-        timeLabels.Add(DateTime.Now.ToString("HH:mm:ss"));
-
-        WeatherInfo = await JS.InvokeAsync<string>("getOpenWeatherInfo");
-        TrafficInfo = await JS.InvokeAsync<string>("getWazeTrafficInfo");
-
-        ComputeSuggestion();
-        StateHasChanged();
-    }
-
-    private void ComputeSuggestion()
-    {
-        var crowd = crowdData.LastOrDefault();
-
-        if (crowd < 30 && WeatherInfo.Contains("Sunny") && TrafficInfo.Contains("Fluid"))
-            SuggestionMessage = "Perfect for a quiet stroll!";
-        else if (crowd < 60)
-            SuggestionMessage = "Bonne sortie, mais soyez pragmatique pour le trafic.";
-        else
-            SuggestionMessage = "Have a good outing, but be pragmatic about traffic.";
-    }
-
-    private async Task SimulateCrowdChange()
-    {
-        var newLevel = new[] { "Weak", "Moderate", "High", "Critical" }[new Random().Next(0, 4)];
-        await hubConnection.SendAsync("BroadcastCrowdLevel", newLevel);
-    }
-    private void HandleTrafficUpdate(string newInfo)
-    {
-        TrafficInfo = newInfo;
-        InvokeAsync(StateHasChanged);
-    }
-    // public void Dispose()
-    // {
-    //     TrafficConditionService.OnTrafficInfoUpdated -= HandleTrafficUpdate;
-    // }
 }
 
 

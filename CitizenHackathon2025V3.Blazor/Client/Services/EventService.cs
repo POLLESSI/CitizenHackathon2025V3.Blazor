@@ -70,8 +70,6 @@ namespace CitizenHackathon2025V3.Blazor.Client.Services
         {
             return @event; // Placeholder for actual update logic
         }
-        
-        
     }
 }
 

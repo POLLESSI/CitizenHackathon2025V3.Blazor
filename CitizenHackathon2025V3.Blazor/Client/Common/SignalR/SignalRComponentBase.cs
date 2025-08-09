@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
+using CitizenHackathon2025V3.Blazor.Client.Services;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,46 +11,47 @@ namespace CitizenHackathon2025V3.Blazor.Client.Common.SignalR
 {
     public abstract class SignalRComponentBase<TModel> : ComponentBase, IAsyncDisposable
     {
-    #nullable disable
-        protected HubConnection hubConnection;
+#nullable disable
 
+        [Inject] protected ISignalRService SignalRService { get; set; }
+        [Inject] protected IJSRuntime JS { get; set; }
+
+        protected HubConnection hubConnection;
         public List<TModel> Items { get; private set; } = new();
+
+        protected bool IsLoading = true;
         public List<TModel> VisibleItems { get; private set; } = new();
 
         protected int BatchSize { get; set; } = 10;
         protected int CurrentIndex { get; private set; } = 0;
         protected bool IsEndOfList => CurrentIndex >= Items.Count;
-
-        protected bool IsLoading { get; private set; }
         protected string ErrorMessage { get; private set; }
 
         /// <summary>
         /// Will be triggered on each new item received via SignalR.
         /// </summary>
-        [Parameter]
-        public EventCallback<TModel> OnNewItem { get; set; }
-
-        protected abstract string HubUrl { get; }
-        protected abstract string HubEventName { get; }
         protected abstract Task<List<TModel>> LoadDataAsync();
+        protected virtual Task OnNewItem(TModel newItem) => Task.CompletedTask;
+
+        protected virtual string HubUrl => "/hubs/notifyhub";
+        protected virtual string HubEventName => "notify";
+
 
         protected override async Task OnInitializedAsync()
         {
-            IsLoading = true;
-            try
+            SignalRService.OnNotify += async (data) =>
             {
-                Items = await LoadDataAsync();
-                LoadNextPage();
-                await InitializeHubConnection();
-            }
-            catch (Exception ex)
-            {
-                ErrorMessage = ex.Message;
-            }
-            finally
-            {
-                IsLoading = false;
-            }
+                if (data is TModel typedData)
+                {
+                    Items.Insert(0, typedData);
+                    await OnNewItem(typedData);
+                    StateHasChanged();
+                }
+            };
+
+            await SignalRService.StartAsync(HubUrl, HubEventName);
+            Items = await LoadDataAsync();
+            IsLoading = false;
         }
 
         /// <summary>
@@ -82,11 +85,6 @@ namespace CitizenHackathon2025V3.Blazor.Client.Common.SignalR
                 CurrentIndex++;
 
                 await InvokeAsync(StateHasChanged);
-
-                if (OnNewItem.HasDelegate)
-                {
-                    await OnNewItem.InvokeAsync(model);
-                }
             });
 
             await hubConnection.StartAsync();
@@ -102,6 +100,55 @@ namespace CitizenHackathon2025V3.Blazor.Client.Common.SignalR
         protected virtual Task OnNewItemReceived(TModel item)
         {
             return Task.CompletedTask;
+        }
+        /// <summary>
+        /// Initial loading on initial display (1st page).
+        /// </summary>
+        protected virtual async Task LoadInitialItemsAsync()
+        {
+            try
+            {
+                IsLoading = true;
+                ErrorMessage = string.Empty;
+
+                Items = await LoadDataAsync() ?? new();
+                VisibleItems.Clear();
+                CurrentIndex = 0;
+
+                LoadNextPage(); // ➕ loads the first batch
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Erreur de chargement initial : {ex.Message}";
+            }
+            finally
+            {
+                IsLoading = false;
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+
+        /// <summary>
+        /// Loading the next page (scroll down).
+        /// </summary>
+        protected virtual async Task LoadMoreItemsAsync()
+        {
+            if (IsEndOfList) return;
+
+            try
+            {
+                IsLoading = true;
+                LoadNextPage(); // ➕ use existing method
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Erreur de pagination : {ex.Message}";
+            }
+            finally
+            {
+                IsLoading = false;
+                await InvokeAsync(StateHasChanged);
+            }
         }
     }
 }

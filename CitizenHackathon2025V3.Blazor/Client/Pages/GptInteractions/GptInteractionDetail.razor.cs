@@ -8,7 +8,7 @@ namespace CitizenHackathon2025V3.Blazor.Client.Pages.GptInteractions
 {
     public partial class GptInteractionDetail
     {
-#nullable disable
+    #nullable disable
         [Inject]
         public HttpClient? Client { get; set; }
         public GptInteractionModel? CurrentGptInteraction { get; set; }

@@ -5,7 +5,7 @@ namespace CitizenHackathon2025V3.Blazor.Client.Services
 {
     public class PlaceService
     {
-#nullable disable
+    #nullable disable
         private readonly HttpClient _httpClient;
 
         public PlaceService(HttpClient httpClient)

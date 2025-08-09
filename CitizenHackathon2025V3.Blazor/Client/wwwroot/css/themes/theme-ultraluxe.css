@@ -1,0 +1,63 @@
+﻿.theme-ultraluxe {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-main);
+}
+
+    .theme-ultraluxe .card {
+        background-color: #1e1e1e;
+        color: #fff;
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--elevation-1);
+        padding: 1rem;
+        margin-bottom: 1rem;
+        transition: box-shadow var(--transition-fast);
+    }
+
+        .theme-ultraluxe .card:hover {
+            box-shadow: var(--elevation-2);
+        }
+
+    .theme-ultraluxe button {
+        background-color: var(--color-accent);
+        color: #000;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: var(--border-radius-lg);
+        transition: background-color var(--transition-fast);
+    }
+
+        .theme-ultraluxe button:hover {
+            background-color: var(--color-highlight);
+        }
+body.theme-ultraluxe {
+    background: linear-gradient(135deg, var(--color-ultraluxe-start), var(--color-ultraluxe-end));
+    color: #f5f5f5;
+}
+
+.theme-ultraluxe h1, .theme-ultraluxe h2 {
+    color: var(--color-gold);
+    text-shadow: 0 0 8px #fff5cc;
+}
+
+.theme-ultraluxe .highlight {
+    color: var(--color-highlight);
+}
+
+body {
+    font-family: var(--font-main);
+    margin: 0;
+    background: linear-gradient(135deg, #2c113f, #000000);
+    color: var(--text-light);
+    overflow-x: hidden;
+}
+
+h1, h2 {
+    font-weight: 600;
+    color: var(--highlight-color);
+    text-shadow: 0 0 8px #fff5cc;
+}
+
+.highlight {
+    color: #00e5ee;
+}

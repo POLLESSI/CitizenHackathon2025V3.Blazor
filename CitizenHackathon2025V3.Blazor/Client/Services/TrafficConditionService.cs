@@ -1,5 +1,7 @@
-﻿using System.Net.Http.Json;
-using CitizenHackathon2025V3.Blazor.Client.Models;
+﻿using CitizenHackathon2025V3.Blazor.Client.Models;
+using CitizenHackathon2025V3.Blazor.Client.Utils;
+using System.Net.Http.Json;
+using static System.Net.WebRequestMethods;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Services
 {
@@ -14,12 +16,25 @@ namespace CitizenHackathon2025V3.Blazor.Client.Services
         }
         public async Task<IEnumerable<TrafficConditionModel?>> GetLatestTrafficConditionAsync()
         {
-            var response = await _httpClient.GetAsync("api/trafficcondition/latest");
-            if (response.IsSuccessStatusCode)
+            
+            //var response = await _httpClient.GetAsync("api/trafficcondition/latest");
+            //if (response.IsSuccessStatusCode)
+            //{
+            //    var data = await response.Content.ReadFromJsonAsync<IEnumerable<TrafficConditionModel>>();
+            //    return data?.ToList() ?? new List<TrafficConditionModel>();
+            //}
+
+            //return new List<TrafficConditionModel>();
+            try
             {
-                return await response.Content.ReadFromJsonAsync<IEnumerable<TrafficConditionModel?>>();
+                var raw = await GetLatestTrafficConditionAsync();
+                return raw.ToNonNullList();
             }
-            return Enumerable.Empty<TrafficConditionModel?>();
+            catch (Exception ex)
+            {
+                Console.WriteLine("❌ Erreur GetLatestTrafficConditionAsync : " + ex.Message);
+                return Enumerable.Empty<TrafficConditionModel>();
+            }
         }
         public async Task<TrafficConditionModel> SaveTrafficConditionAsync(TrafficConditionModel @trafficCondition)
         {

@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Json;
 using CitizenHackathon2025V3.Blazor.Client.Models;
+using CitizenHackathon2025V3.Blazor.Client.Utils;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Services
 {
@@ -28,6 +29,12 @@ namespace CitizenHackathon2025V3.Blazor.Client.Services
                 return await response.Content.ReadFromJsonAsync<IEnumerable<WeatherForecastModel?>>();
             }
             return Enumerable.Empty<WeatherForecastModel?>();
+        }
+
+        public async Task<List<WeatherForecastModel>> GetLatestForecastNonNullAsync()
+        {
+            var raw = await GetLatestWeatherForecastAsync();
+            return raw.ToNonNullList();
         }
         public async Task<WeatherForecastModel> SaveWeatherForecastAsync(WeatherForecastModel @weatherForecast)
         {

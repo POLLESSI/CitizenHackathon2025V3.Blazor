@@ -5,7 +5,7 @@ using CitizenHackathon2025V3.Blazor.Client.Common.SignalR;
 
 namespace CitizenHackathon2025V3.Blazor.Client.Pages.CrowdInfos
 {
-    public partial class CrowdInfo : SignalRComponentBase<CrowdInfoModel>
+    public partial class CrowdInfo : Common.SignalR.SignalRComponentBase<CrowdInfoModel>
     {
     #nullable disable
         [Inject] public CrowdInfoService CrowdInfoService { get; set; }

@@ -8,12 +8,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution elements", "Solution elements", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 	ProjectSection(SolutionItems) = preProject
 		Deploiement.txt = Deploiement.txt
-		READme.md = READme.md
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Éléments de solution", "Éléments de solution", "{9C8CB701-102D-CF49-A3E0-89AC09D42C2C}"
-	ProjectSection(SolutionItems) = preProject
+		Free-BlazorPorts.ps1 = Free-BlazorPorts.ps1
 		global.json = global.json
+		READme.md = READme.md
 	EndProjectSection
 EndProject
 Global
